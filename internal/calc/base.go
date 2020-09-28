@@ -109,7 +109,40 @@ func Init(numQueueSize int, debug bool) *PipeLine {
 
 	// go pl.schedule()
 
+	if pl.debug {
+		go pl.report()
+	}
+
 	return &pl
+}
+
+func (p *PipeLine) report() {
+	for {
+		select {
+		case <-p.signal:
+			return
+		default:
+			fmt.Printf("[Time: %s]\n", time.Now())
+			fmt.Printf("Push Count: %d\n", p.pushCnt)
+			fmt.Printf("Pop Count: %d\n", p.popCnt)
+			fmt.Println()
+			fmt.Printf("Queue Status: ")
+			for i := 0; i < p.numQueueSize; i++ {
+				if p.bufferMetaData.ringIsEmpty[i] {
+					fmt.Printf("□")
+				} else {
+					fmt.Printf("■")
+				}
+			}
+			fmt.Println()
+			fmt.Printf("Num of Pushers: %d\n", p.numPusher)
+			fmt.Printf("Num of Poppers: %d\n", p.numPoper)
+			fmt.Println("- - - - - - - - - - - - - - - -")
+			fmt.Println()
+		}
+
+		time.Sleep(4 * time.Second)
+	}
 }
 
 // StopScheduler stops scheduler and shift all resources to popper
