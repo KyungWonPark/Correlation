@@ -34,8 +34,8 @@ func (p *PipeLine) ZScoring(inputMat *mat64.Dense, outputMat *mat64.Dense) {
 	outputRows, outputCols := outputMat.Dims()
 
 	{ // Check input matrix and output matrix dimensions
-		if outputRows != inputRows || outputCols != inputRows {
-			log.Fatalf("[ERROR] Pearson: Input is %d by %d but output is %d by %d\n", inputRows, inputCols, outputRows, outputCols)
+		if outputRows != inputRows || outputCols != inputCols {
+			log.Fatalf("[ERROR] Z-Scroing: Input is %d by %d but output is %d by %d\n", inputRows, inputCols, outputRows, outputCols)
 		}
 	}
 

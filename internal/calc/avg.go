@@ -33,7 +33,7 @@ func (p *PipeLine) Avg(inputMat *mat64.Dense, outputMat *mat64.Dense, div float6
 	outputRows, outputCols := outputMat.Dims()
 
 	if inputRows != outputRows || inputCols != outputCols {
-		log.Fatalf("[ERROR] Sigmoid: input dims: %d by %d when output dims: %d by %d\n", inputRows, inputCols, outputRows, outputCols)
+		log.Fatalf("[ERROR] Avg: input dims: %d by %d when output dims: %d by %d\n", inputRows, inputCols, outputRows, outputCols)
 	}
 
 	order := make(chan int, p.numPoper)

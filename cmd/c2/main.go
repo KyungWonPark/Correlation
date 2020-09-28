@@ -19,7 +19,7 @@ func main() {
 		ringBuffer[i] = mat64.NewDense(13362, 13362, nil)
 	}
 
-	pl := calc.Init(numQueueSize, false)
+	pl := calc.Init(numQueueSize, true)
 
 	go func() {
 		for _, file := range fileList {

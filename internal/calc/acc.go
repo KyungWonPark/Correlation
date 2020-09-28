@@ -33,7 +33,7 @@ func (p *PipeLine) Acc(inputMat *mat64.Dense, outputMat *mat64.Dense) {
 	outputRows, outputCols := outputMat.Dims()
 
 	if inputRows != outputRows || inputCols != outputCols {
-		log.Fatalf("[ERROR] Sigmoid: input dims: %d by %d when output dims: %d by %d\n", inputRows, inputCols, outputRows, outputCols)
+		log.Fatalf("[ERROR] Acc: input dims: %d by %d when output dims: %d by %d\n", inputRows, inputCols, outputRows, outputCols)
 	}
 
 	order := make(chan int, p.numPoper)
