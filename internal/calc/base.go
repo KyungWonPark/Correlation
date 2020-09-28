@@ -53,14 +53,14 @@ func (p *PipeLine) schedule() {
 			// queue size must be larger than or equal to 2
 			waterLevel := int64(math.Round(float64(p.numQueueSize) / 2))
 
-			if p.numQueueSize >= 2 {
+			if p.numQueueSize >= 2 && p.pushCnt > int64(p.numQueueSize) {
 				if pushCnt > popCnt+waterLevel {
-					if (p.numPoper+2 <= runtime.NumCPU()) && (p.numPusher-2 >= 0) {
+					if (p.numPoper+2 <= runtime.NumCPU()) && (p.numPusher-2 > 0) {
 						p.numPoper += 2
 						p.numPusher -= 2
 					}
 				} else if popCnt+waterLevel > pushCnt {
-					if (p.numPoper+2 <= runtime.NumCPU()) && (p.numPusher-2 >= 0) {
+					if (p.numPoper+2 <= runtime.NumCPU()) && (p.numPusher-2 > 0) {
 						p.numPoper += 2
 						p.numPusher -= 2
 					}
