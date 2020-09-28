@@ -29,10 +29,17 @@ type PipeLine struct {
 	debug          bool
 }
 
+// GetNP returns numPusher
+func (p *PipeLine) GetNP() int {
+	return p.numPusher
+}
+
 func (p *PipeLine) schedule() {
 	for {
 		select {
 		case <-p.signal:
+			p.numPoper = runtime.NumCPU()
+
 			return
 		default:
 			p.popCntLock.RLock()
@@ -105,9 +112,10 @@ func Init(numQueueSize int, debug bool) *PipeLine {
 	return &pl
 }
 
-// Quit stops scheduler
-func (p *PipeLine) Quit() {
+// StopScheduler stops scheduler and shift all resources to popper
+func (p *PipeLine) StopScheduler() {
 	p.signal <- 0
+
 	return
 }
 
@@ -143,15 +151,24 @@ func (p *PipeLine) Push(jobID int) {
 	return
 }
 
+// Close closed pipeline
+func (p *PipeLine) Close() {
+	close(p.jobQueue)
+
+	return
+}
+
 // Pop pops the data from the job queue
-func (p *PipeLine) Pop() int {
-	jobID := <-p.jobQueue
+func (p *PipeLine) Pop() (int, bool) {
+	jobID, ok := <-p.jobQueue
 
-	p.popCntLock.Lock()
-	p.popCnt++
-	p.popCntLock.Unlock()
+	if ok {
+		p.popCntLock.Lock()
+		p.popCnt++
+		p.popCntLock.Unlock()
+	}
 
-	return jobID
+	return jobID, ok
 }
 
 // Free frees slot from ring buffer
