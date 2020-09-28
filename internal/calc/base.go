@@ -169,6 +169,10 @@ func (p *PipeLine) Malloc() int {
 	}
 	p.bufferMetaData.lock.Unlock()
 
+	p.pushCntLock.Lock()
+	p.pushCnt++
+	p.pushCntLock.Unlock()
+
 	return bufferIdx
 }
 
@@ -176,10 +180,6 @@ func (p *PipeLine) Malloc() int {
 func (p *PipeLine) Push(jobID int) {
 
 	p.jobQueue <- jobID
-
-	p.pushCntLock.Lock()
-	p.pushCnt++
-	p.pushCntLock.Unlock()
 
 	return
 }
@@ -195,18 +195,16 @@ func (p *PipeLine) Close() {
 func (p *PipeLine) Pop() (int, bool) {
 	jobID, ok := <-p.jobQueue
 
-	if ok {
-		p.popCntLock.Lock()
-		p.popCnt++
-		p.popCntLock.Unlock()
-	}
-
 	return jobID, ok
 }
 
 // Free frees slot from ring buffer
 func (p *PipeLine) Free(i int) {
 	p.bufferMetaData.ringIsEmpty[i] = true
+
+	p.popCntLock.Lock()
+	p.popCnt++
+	p.popCntLock.Unlock()
 
 	return
 }
