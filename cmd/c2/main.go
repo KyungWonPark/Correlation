@@ -16,7 +16,7 @@ func main() {
 	numQueueSize := 4
 	ringBuffer := make([]*mat64.Dense, numQueueSize)
 	for i := 0; i < numQueueSize; i++ {
-		ringBuffer[i] = mat64.NewDense(13362, 13362, nil)
+		ringBuffer[i] = mat64.NewDense(13362, 600, nil)
 	}
 
 	pl := calc.Init(numQueueSize, true)
