@@ -107,7 +107,7 @@ func Init(numQueueSize int, debug bool) *PipeLine {
 		pl.bufferMetaData.ringIsEmpty[i] = true
 	}
 
-	go pl.schedule()
+	// go pl.schedule()
 
 	return &pl
 }
