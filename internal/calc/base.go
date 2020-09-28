@@ -126,7 +126,7 @@ func (p *PipeLine) report() {
 			fmt.Printf("Push Count: %d\n", p.pushCnt)
 			fmt.Printf("Pop Count: %d\n", p.popCnt)
 			fmt.Println()
-			fmt.Printf("Queue Status: ")
+			fmt.Printf("Ring Buffer Status: ")
 			for i := 0; i < p.numQueueSize; i++ {
 				if p.bufferMetaData.ringIsEmpty[i] {
 					fmt.Printf("□")

@@ -38,7 +38,7 @@ func Mat64toCSV(path string, matrix *mat64.Dense) {
 		wg.Add(jobMark)
 		for offset := 0; offset < jobMark; offset++ {
 			parsed[offset] = ""
-			go parseLine(matrix, parsed, row+offset, &wg)
+			go parseLine(matrix, parsed, offset, row, &wg)
 		}
 		wg.Wait()
 
@@ -50,13 +50,13 @@ func Mat64toCSV(path string, matrix *mat64.Dense) {
 	return
 }
 
-func parseLine(matrix *mat64.Dense, parsed []string, index int, wg *sync.WaitGroup) {
+func parseLine(matrix *mat64.Dense, parsed []string, offset int, row int, wg *sync.WaitGroup) {
 	_, cols := matrix.Dims()
 
 	for i := 0; i < cols; i++ {
-		parsed[index] += fmt.Sprintf("%f", matrix.At(index, i))
+		parsed[offset] += fmt.Sprintf("%f", matrix.At(row+offset, i))
 		if i != cols-1 {
-			parsed[index] += ", "
+			parsed[offset] += ", "
 		}
 	}
 
