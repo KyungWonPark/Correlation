@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/KyungWonPark/Correlation/internal/calc"
@@ -34,31 +35,44 @@ func main() {
 		return
 	}()
 
-	accMat := mat64.NewDense(13362, 13362, nil)
-	finalMat := mat64.NewDense(13362, 13362, nil)
+	avgedMat := mat64.NewDense(13362, 13362, nil)
 
 	{
-		temp0 := mat64.NewDense(13362, 600, nil)
-		temp1 := mat64.NewDense(13362, 600, nil)
-		temp2 := mat64.NewDense(13362, 13362, nil)
+		accedMat := mat64.NewDense(13362, 13362, nil)
+		{
+			temp0 := mat64.NewDense(13362, 600, nil)
+			temp1 := mat64.NewDense(13362, 600, nil)
+			temp2 := mat64.NewDense(13362, 13362, nil)
 
-		for {
-			job, ok := pl.Pop()
-			if ok {
-				pl.ZScoring(ringBuffer[job], temp0)
-				pl.Sigmoid(temp0, temp1)
-				pl.Pearson(temp1, temp2)
-				pl.Acc(temp2, accMat)
+			for {
+				job, ok := pl.Pop()
+				if ok {
+					pl.ZScoring(ringBuffer[job], temp0)
+					pl.Sigmoid(temp0, temp1)
+					pl.Pearson(temp1, temp2)
+					pl.Acc(temp2, accedMat)
 
-				pl.Free(job)
-			} else {
-				break
+					pl.Free(job)
+				} else {
+					break
+				}
 			}
 		}
+		pl.Avg(accedMat, avgedMat, float64(len(fileList)))
 	}
 
-	pl.Avg(accMat, finalMat, float64(len(fileList)))
-	io.Mat64toCSV(RESULTDIR+"/C2.csv", finalMat)
+	thredMat := mat64.NewDense(13362, 13362, nil)
+	eigVal := mat64.NewDense(13362, 1, nil)
+	eigVec := mat64.NewDense(13362, 13362, nil)
+
+	var thr float64
+	for thr = 0; thr < 1; thr += 0.05 {
+		pl.Threshold(avgedMat, thredMat, thr)
+
+		io.Mat64toCSV(RESULTDIR+"/c2-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
+		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
+		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
+	}
 
 	return
 }
