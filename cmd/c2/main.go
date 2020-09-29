@@ -67,28 +67,28 @@ func main() {
 
 	thredShm, err := shm.Create(13362 * 13362 * 8)
 	if err != nil {
-		log.Fatal("Failed to allocate shared memory region.")
+		log.Fatal("Failed to allocate shared memory region.", err)
 	}
 	eigValShm, err := shm.Create(13362 * 1 * 8)
 	if err != nil {
-		log.Fatal("Failed to allocate shared memory region.")
+		log.Fatal("Failed to allocate shared memory region.", err)
 	}
 	eigVecShm, err := shm.Create(13362 * 13362 * 8)
 	if err != nil {
-		log.Fatal("Failed to allocate shared memory region.")
+		log.Fatal("Failed to allocate shared memory region.", err)
 	}
 
 	thredBase, err := thredShm.Attach()
 	if err != nil {
-		log.Fatal("Failed to allocate shared memory region.")
+		log.Fatal("Failed to attach shared memory region.", err)
 	}
 	eigValBase, err := thredShm.Attach()
 	if err != nil {
-		log.Fatal("Failed to allocate shared memory region.")
+		log.Fatal("Failed to attach shared memory region.", err)
 	}
 	eigVecBase, err := thredShm.Attach()
 	if err != nil {
-		log.Fatal("Failed to allocate shared memory region.")
+		log.Fatal("Failed to attach shared memory region.", err)
 	}
 
 	thredBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(thredBase)))
@@ -107,7 +107,7 @@ func main() {
 		magmaCmd := exec.Command("./files/magma", fmt.Sprintf("%d", thredShm.Id), fmt.Sprintf("%d", eigValShm.Id), fmt.Sprintf("%d", eigVecShm.Id))
 		_, err := magmaCmd.Output()
 		if err != nil {
-			log.Fatal("Failed to execute MAGMA routine.")
+			log.Fatal("Failed to execute MAGMA routine.", err)
 		}
 
 		io.Mat64toCSV(RESULTDIR+"/c2-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)

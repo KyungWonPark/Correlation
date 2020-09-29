@@ -119,8 +119,6 @@ func Init(numQueueSize int, debug bool) *PipeLine {
 func (p *PipeLine) report() {
 	for {
 		select {
-		case <-p.signal:
-			return
 		default:
 			fmt.Printf("[Time: %s]\n", time.Now())
 			fmt.Printf("Push Count: %d\n", p.pushCnt)
