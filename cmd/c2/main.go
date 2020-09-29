@@ -2,10 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
+	"unsafe"
 
 	"github.com/KyungWonPark/Correlation/internal/calc"
 	"github.com/KyungWonPark/Correlation/internal/io"
+	"github.com/ghetzel/shmtool/shm"
 	"github.com/gonum/matrix/mat64"
 )
 
@@ -61,18 +65,63 @@ func main() {
 		pl.Avg(accedMat, avgedMat, float64(len(fileList)))
 	}
 
-	thredMat := mat64.NewDense(13362, 13362, nil)
-	eigVal := mat64.NewDense(13362, 1, nil)
-	eigVec := mat64.NewDense(13362, 13362, nil)
+	thredShm, err := shm.Create(13362 * 13362 * 8)
+	if err != nil {
+		log.Fatal("Failed to allocate shared memory region.")
+	}
+	eigValShm, err := shm.Create(13362 * 1 * 8)
+	if err != nil {
+		log.Fatal("Failed to allocate shared memory region.")
+	}
+	eigVecShm, err := shm.Create(13362 * 13362 * 8)
+	if err != nil {
+		log.Fatal("Failed to allocate shared memory region.")
+	}
+
+	thredBase, err := thredShm.Attach()
+	if err != nil {
+		log.Fatal("Failed to allocate shared memory region.")
+	}
+	eigValBase, err := thredShm.Attach()
+	if err != nil {
+		log.Fatal("Failed to allocate shared memory region.")
+	}
+	eigVecBase, err := thredShm.Attach()
+	if err != nil {
+		log.Fatal("Failed to allocate shared memory region.")
+	}
+
+	thredBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(thredBase)))
+	eigValBackingArr := (*[13362 * 1]float64)(unsafe.Pointer(uintptr(eigValBase)))
+	eigVecBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(eigVecBase)))
+
+	thredMat := mat64.NewDense(13362, 13362, (*thredBackingArr)[:])
+	eigVal := mat64.NewDense(13362, 1, (*eigValBackingArr)[:])
+	eigVec := mat64.NewDense(13362, 13362, (*eigVecBackingArr)[:])
 
 	var thr float64
 	for thr = 0; thr < 1; thr += 0.05 {
 		pl.Threshold(avgedMat, thredMat, thr)
 
+		// Call MAGMA routine
+		magmaCmd := exec.Command("./files/magma", fmt.Sprintf("%d", thredShm.Id), fmt.Sprintf("%d", eigValShm.Id), fmt.Sprintf("%d", eigVecShm.Id))
+		_, err := magmaCmd.Output()
+		if err != nil {
+			log.Fatal("Failed to execute MAGMA routine.")
+		}
+
 		io.Mat64toCSV(RESULTDIR+"/c2-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
 		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
 		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
 	}
+
+	thredShm.Detach(thredBase)
+	eigValShm.Detach(eigValBase)
+	eigVecShm.Detach(eigVecBase)
+
+	thredShm.Destroy()
+	eigValShm.Destroy()
+	eigVecShm.Destroy()
 
 	return
 }
