@@ -91,6 +91,8 @@ func main() {
 		log.Fatal("Failed to attach shared memory region.", err)
 	}
 
+	fmt.Println("Successfully created shared memory segments!")
+
 	thredBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(thredBase)))
 	eigValBackingArr := (*[13362 * 1]float64)(unsafe.Pointer(uintptr(eigValBase)))
 	eigVecBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(eigVecBase)))
