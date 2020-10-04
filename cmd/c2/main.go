@@ -94,6 +94,10 @@ func main() {
 
 	fmt.Println("Successfully created shared memory segments!")
 
+	fmt.Printf("thredShm ID: %d\n", thredShm.Id)
+	fmt.Printf("eigValShm ID: %d\n", eigValShm.Id)
+	fmt.Printf("eigVecShm ID: %d\n", eigVecShm.Id)
+
 	thredBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(thredBase)))
 	eigValBackingArr := (*[13362 * 1]float64)(unsafe.Pointer(uintptr(eigValBase)))
 	eigVecBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(eigVecBase)))
