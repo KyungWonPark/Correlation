@@ -104,12 +104,14 @@ func main() {
 		pl.Threshold(avgedMat, thredMat, thr)
 
 		// Call MAGMA routine
+		fmt.Printf("Calling MAGMA routine...\n")
 		magmaCmd := exec.Command("./files/magma", "13362", fmt.Sprintf("%d", thredShm.Id), fmt.Sprintf("%d", eigValShm.Id), fmt.Sprintf("%d", eigVecShm.Id))
 		_, err := magmaCmd.Output()
 		if err != nil {
 			log.Fatal("Failed to execute MAGMA routine.", err)
 		}
 
+		fmt.Printf("Threshold: %f Writing results...\n", thr)
 		io.Mat64toCSV(RESULTDIR+"/c2-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
 		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
 		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
