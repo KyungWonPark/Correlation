@@ -36,18 +36,18 @@ int main(int argc, char* argv[]) {
 	double* pEigVal;
 	double* pEigVec;
 
-	if ((pMatBuffer = shmat(matBufferShmID, NULL, 0)) == (double*) -1) {
+	if ((pMatBuffer = (double*) shmat(matBufferShmID, NULL, 0)) == (double*) -1) {
 		printf("Failed to open shared memoery region: %d\n", matBufferShmID);
 		exit(1);
 	}
 
 
-	if ((pEigVal = shmat(eigValShmID, NULL, 0)) == (double*) -1) {
+	if ((pEigVal = (double*) shmat(eigValShmID, NULL, 0)) == (double*) -1) {
 		printf("Failed to open shared memoery region: %d\n", eigValShmID);
 		exit(1);
 	}
 
-	if ((pEigVec = shmat(eigVecShmID, NULL, 0)) == (double*) -1) {
+	if ((pEigVec = (double*) shmat(eigVecShmID, NULL, 0)) == (double*) -1) {
 		printf("Failed to open shared memoery region: %d\n", eigVecShmID);
 		exit(1);
 	}
@@ -102,14 +102,13 @@ int main(int argc, char* argv[]) {
 	
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
-			pEigVec[i * N][j] = h_R[i * N][j];
+			pEigVec[i * N + j] = h_R[i * N + j];
 		}
 	}
 
 	// Finish
 	magma_free_cpu( w1 );
 	magma_free_cpu( iwork );
-	magma_free_cpu( liwork );
 	magma_free_pinned( h_R );
 	magma_free_pinned( h_work );
 
