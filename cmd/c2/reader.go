@@ -134,8 +134,8 @@ func copyMat64toC(mat *mat64.Dense, arr unsafe.Pointer) {
 			index := uintptr(i*cols + j)
 			stride := uintptr(unsafe.Sizeof(float64(1)))
 
-			addr := (*float64)(unsafe.Pointer(uintptr(arr) + index*stride))
-			*addr = mat.At(i, j)
+			addr := (*C.double)(unsafe.Pointer(uintptr(arr) + index*stride))
+			*addr = (C.double)(mat.At(i, j))
 		}
 	}
 
@@ -150,8 +150,9 @@ func copyCtoMat64(mat *mat64.Dense, arr unsafe.Pointer) {
 			index := uintptr(i*cols + j)
 			stride := uintptr(unsafe.Sizeof(float64(1)))
 
-			addr := (*float64)(unsafe.Pointer(uintptr(arr) + index*stride))
-			mat.Set(i, j, *addr)
+			addr := (*C.double)(unsafe.Pointer(uintptr(arr) + index*stride))
+			value := (float64)(*addr)
+			mat.Set(i, j, value)
 		}
 	}
 
