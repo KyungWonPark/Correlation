@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -25,7 +24,7 @@ func main() {
 		ringBuffer[i] = mat64.NewDense(13362, 600, nil)
 	}
 
-	pl := calc.Init(numQueueSize, true)
+	pl := calc.Init(numQueueSize, false)
 
 	go func() {
 		for _, file := range fileList {
@@ -94,9 +93,9 @@ func main() {
 
 	fmt.Println("Successfully created shared memory segments!")
 
-	fmt.Printf("thredShm ID: %d\n", thredShm.Id)
-	fmt.Printf("eigValShm ID: %d\n", eigValShm.Id)
-	fmt.Printf("eigVecShm ID: %d\n", eigVecShm.Id)
+	//fmt.Printf("thredShm ID: %d\n", thredShm.Id)
+	//fmt.Printf("eigValShm ID: %d\n", eigValShm.Id)
+	//fmt.Printf("eigVecShm ID: %d\n", eigVecShm.Id)
 
 	thredBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(thredBase)))
 	eigValBackingArr := (*[13362 * 1]float64)(unsafe.Pointer(uintptr(eigValBase)))
@@ -110,9 +109,9 @@ func main() {
 	for thr = 0; thr < 1; thr += 0.5 {
 		pl.Threshold(avgedMat, thredMat, thr)
 
-		fmt.Println("Waiting for ENTER key. Manually call MAGMA routine!")
-		reader := bufio.NewReader(os.Stdin)
-		reader.ReadString('\n')
+		//fmt.Println("Waiting for ENTER key. Manually call MAGMA routine!")
+		//reader := bufio.NewReader(os.Stdin)
+		//reader.ReadString('\n')
 
 		// Call MAGMA routine
 		fmt.Printf("Calling MAGMA routine...\n")
