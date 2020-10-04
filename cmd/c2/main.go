@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -104,6 +105,10 @@ func main() {
 	var thr float64
 	for thr = 0; thr < 1; thr += 0.5 {
 		pl.Threshold(avgedMat, thredMat, thr)
+
+		fmt.Println("Waiting for ENTER key. Manually call MAGMA routine!")
+		reader := bufio.NewReader(os.Stdin)
+		reader.ReadString('\n')
 
 		// Call MAGMA routine
 		fmt.Printf("Calling MAGMA routine...\n")
