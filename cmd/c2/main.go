@@ -1,11 +1,11 @@
 package main
 
 import (
+	"C"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
-	"unsafe"
 
 	"github.com/KyungWonPark/Correlation/internal/calc"
 	"github.com/KyungWonPark/Correlation/internal/io"
@@ -97,21 +97,14 @@ func main() {
 	//fmt.Printf("eigValShm ID: %d\n", eigValShm.Id)
 	//fmt.Printf("eigVecShm ID: %d\n", eigVecShm.Id)
 
-	thredBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(thredBase)))
-	eigValBackingArr := (*[13362 * 1]float64)(unsafe.Pointer(uintptr(eigValBase)))
-	eigVecBackingArr := (*[13362 * 13362]float64)(unsafe.Pointer(uintptr(eigVecBase)))
-
-	thredMat := mat64.NewDense(13362, 13362, (*thredBackingArr)[:])
-	eigVal := mat64.NewDense(13362, 1, (*eigValBackingArr)[:])
-	eigVec := mat64.NewDense(13362, 13362, (*eigVecBackingArr)[:])
+	thredMat := mat64.NewDense(13362, 13362, nil)
+	eigVal := mat64.NewDense(13362, 1, nil)
+	eigVec := mat64.NewDense(13362, 13362, nil)
 
 	var thr float64
 	for thr = 0; thr < 1; thr += 0.5 {
 		pl.Threshold(avgedMat, thredMat, thr)
-
-		//fmt.Println("Waiting for ENTER key. Manually call MAGMA routine!")
-		//reader := bufio.NewReader(os.Stdin)
-		//reader.ReadString('\n')
+		copyMat64toC(thredMat, thredBase)
 
 		// Call MAGMA routine
 		fmt.Printf("Calling MAGMA routine...\n")
@@ -120,6 +113,10 @@ func main() {
 		if err != nil {
 			log.Fatal("Failed to execute MAGMA routine.", err)
 		}
+
+		copyCtoMat64(thredMat, thredBase)
+		copyCtoMat64(eigVal, eigValBase)
+		copyCtoMat64(eigVec, eigVecBase)
 
 		fmt.Printf("Threshold: %f Writing results...\n", thr)
 		io.Mat64toCSV(RESULTDIR+"/c2-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)

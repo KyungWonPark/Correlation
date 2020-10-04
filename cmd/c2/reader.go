@@ -1,6 +1,7 @@
 package main
 
 import (
+	"C"
 	"bufio"
 	"log"
 	"math"
@@ -12,6 +13,7 @@ import (
 	"github.com/KyungWonPark/nifti"
 	"github.com/gonum/matrix/mat64"
 )
+import "unsafe"
 
 // Voxel represents fMRI voxel coordinates
 type Voxel struct {
@@ -122,4 +124,35 @@ func doSampling(path string, timeSeries *mat64.Dense, numLoader int) {
 
 	close(order)
 	return
+}
+
+func copyMat64toC(mat *mat64.Dense, arr unsafe.Pointer) {
+	rows, cols := mat.Dims()
+
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			index := uintptr(i*cols + j)
+			stride := uintptr(unsafe.Sizeof(float64(1)))
+
+			addr := (*float64)(unsafe.Pointer(uintptr(arr) + index*stride))
+			*addr = mat.At(i, j)
+		}
+	}
+
+	return
+}
+
+func copyCtoMat64(mat *mat64.Dense, arr unsafe.Pointer) {
+	rows, cols := mat.Dims()
+
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			index := uintptr(i*cols + j)
+			stride := uintptr(unsafe.Sizeof(float64(1)))
+
+			addr := (*float64)(unsafe.Pointer(uintptr(arr) + index*stride))
+			mat.Set(i, j, *addr)
+		}
+	}
+
 }
