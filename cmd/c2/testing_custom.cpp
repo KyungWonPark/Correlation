@@ -37,19 +37,19 @@ int main(int argc, char* argv[]) {
 	double* pEigVec;
 
 	pMatBuffer = (double*) shmat(matBufferShmID, NULL, 0);
-	if pMatBuffer == (double*) -1 {
+	if (pMatBuffer == (double*) -1) {
 		printf("Failed to open shared memoery region: %d\n", matBufferShmID);
 		exit(1);
 	}
 
 	pEigVal = (double*) shmat(eigValShmID, NULL, 0);
-	if pEigVal == (double*) -1 {
+	if (pEigVal == (double*) -1) {
 		printf("Failed to open shared memoery region: %d\n", eigValShmID);
 		exit(1);
 	}
 
 	pEigVec = (double*) shmat(eigVecShmID, NULL, 0);
-	if pEigVec == (double*) -1 {
+	if (pEigVec == (double*) -1) {
 		printf("Failed to open shared memoery region: %d\n", eigVecShmID);
 		exit(1);
 	}
