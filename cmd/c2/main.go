@@ -100,11 +100,11 @@ func main() {
 	eigVec := mat64.NewDense(13362, 13362, (*eigVecBackingArr)[:])
 
 	var thr float64
-	for thr = 0; thr < 1; thr += 0.05 {
+	for thr = 0; thr < 1; thr += 0.5 {
 		pl.Threshold(avgedMat, thredMat, thr)
 
 		// Call MAGMA routine
-		magmaCmd := exec.Command("./files/magma", fmt.Sprintf("%d", thredShm.Id), fmt.Sprintf("%d", eigValShm.Id), fmt.Sprintf("%d", eigVecShm.Id))
+		magmaCmd := exec.Command("./files/magma", "13362", fmt.Sprintf("%d", thredShm.Id), fmt.Sprintf("%d", eigValShm.Id), fmt.Sprintf("%d", eigVecShm.Id))
 		_, err := magmaCmd.Output()
 		if err != nil {
 			log.Fatal("Failed to execute MAGMA routine.", err)
