@@ -66,19 +66,20 @@ int main(int argc, char* argv[]) {
 	TESTING_CHECK( magma_imalloc_cpu( &iwork, liwork ));
 
 	// Copy matrix into MAGMA pinned memory
-	lapackf77_dlacpy( MagmaFullStr, &N, &N, pMatBuffer, &lda, h_R, &lda);
 	CsvParser* csvparser = CsvParser_new(fileName, ",", 0);
 	CsvRow *row;
 
 	int rowIdx = 0;
-	while ((row = Csvparser_getRow(csvparser))) {
+	while ((row = CsvParser_getRow(csvparser))) {
 		const char **rowFields = CsvParser_getFields(row);
 		for (int i = 0; i < CsvParser_getNumFields(row); i++) {
 			double d;
 			sscanf(rowFields[i], "%lf", &d);
 			h_R[rowIdx * 13362 + i] = d;
+			CsvParser_destroy_now(row);
 		}
 	}	
+	CsvParser_destroy(csvparser);
 
 	// Carry out calculations
 	magma_dsyevd_m(ngpu, jobz, uplo, N, h_R, lda, w1, h_work, lwork, iwork, liwork, &info);
