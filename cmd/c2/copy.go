@@ -13,7 +13,7 @@ func mat64tocArr(matrix *mat64.Dense, pArr unsafe.Pointer) {
 
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
-			index := uintptr(i)
+			index := uintptr(i*cols + j)
 			addr := (*float64)(unsafe.Pointer(uintptr(pArr) + index*stride))
 
 			*addr = matrix.At(i, j)
