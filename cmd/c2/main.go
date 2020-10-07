@@ -110,5 +110,11 @@ func main() {
 		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
 	}
 
+	matBufferShm.Detach(pMatBuffer)
+	matBufferShm.Destroy()
+
+	eigValShm.Detach(pEigVal)
+	eigValShm.Destroy()
+
 	return
 }
