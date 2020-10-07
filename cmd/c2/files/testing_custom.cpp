@@ -26,20 +26,20 @@
 // ./testing_custom <job_size> <mat_buffer_shmID> <eigVal_shmID>
 int main(int argc, char* argv[]) {
 	// Parse arguments
-	int jobSize = argv[1];
-	int matBufferShmID = argv[2]; // 13362 by 13362
-	int eigValShmID = argv[3];    // 13362 by 1
+	int jobSize = atoi(argv[1]);
+	int matBufferShmID = atoi(argv[2]); // 13362 by 13362
+	int eigValShmID = atoi(argv[3]);    // 13362 by 1
 
 	// Attach shared memory regions
 	double* pMatBuffer = (double*) shmat(matBufferShmID, NULL, 0);
 	if (pMatBuffer == (double*) -1) {
-		printf("Failed to attach shared memory region %d\n", matBufferShmID)
+		printf("Failed to attach shared memory region %d\n", matBufferShmID);
 		exit(1);
 	}
 
 	double* pEigVal = (double*) shmat(eigValShmID, NULL, 0);
 	if (pEigVal == (double*) -1) {
-		printf("Failed to attach shared memory region: %d\n", eigValShmID)
+		printf("Failed to attach shared memory region: %d\n", eigValShmID);
 		exit(1);
 	}
 
