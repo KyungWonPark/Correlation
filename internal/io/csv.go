@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"strconv"
 	"sync"
 
 	"github.com/gonum/matrix/mat64"
@@ -54,7 +55,7 @@ func parseLine(matrix *mat64.Dense, parsed []string, offset int, row int, wg *sy
 	_, cols := matrix.Dims()
 
 	for i := 0; i < cols; i++ {
-		parsed[offset] += fmt.Sprintf("%f", matrix.At(row+offset, i))
+		parsed[offset] += strconv.FormatFloat(matrix.At(row+offset, i), 'f', -1, 64)
 		if i != cols-1 {
 			parsed[offset] += ", "
 		}
