@@ -90,10 +90,9 @@ func main() {
 	eigVec := mat64.NewDense(13362, 13362, nil)
 
 	var thr float64
-	for thr = 0; thr < 1; thr += 0.05 {
+	for thr = 0; thr < 1.0; thr += 0.05 {
 		pl.Threshold(avgedMat, thredMat, thr)
 		mat64tocArr(thredMat, pMatBuffer)
-		go io.Mat64toCSV(RESULTDIR+"/c2-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
 
 		// Call MAGMA
 		cmd := exec.Command("files/magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
@@ -106,6 +105,7 @@ func main() {
 		cArrtomat64(eigVec, pMatBuffer)
 
 		fmt.Printf("Threshold: %f Writing results...\n", thr)
+		io.Mat64toCSV(RESULTDIR+"/c2-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
 		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
 		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
 	}
