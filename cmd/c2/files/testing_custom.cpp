@@ -11,9 +11,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-#include "csvparser.h"
-#include "csvwriter.h"
-
 // Macros
 #define TESTING_CHECK( err ) 												 \
 	do { 																	 \
@@ -26,11 +23,25 @@
 		} 																	 \
 	} while( 0 ) 															 \
 
-// ./testing_custom <job_size> <mat_buffer_shmID> <eigVal_shmID> <eigVec_shmID>
+// ./testing_custom <job_size> <mat_buffer_shmID> <eigVal_shmID>
 int main(int argc, char* argv[]) {
 	// Parse arguments
-	int jobSize = 13362;
-	char* fileName = argv[1];
+	int jobSize = argv[1];
+	int matBufferShmID = argv[2]; // 13362 by 13362
+	int eigValShmID = argv[3];    // 13362 by 1
+
+	// Attach shared memory regions
+	double* pMatBuffer = (double*) shmat(matBufferShmID, NULL, 0);
+	if (pMatBuffer == (double*) -1) {
+		printf("Failed to attach shared memory region %d\n", matBufferShmID)
+		exit(1);
+	}
+
+	double* pEigVal = (double*) shmat(eigValShmID, NULL, 0);
+	if (pEigVal == (double*) -1) {
+		printf("Failed to attach shared memory region: %d\n", eigValShmID)
+		exit(1);
+	}
 
 	// MAGMA Init
 	TESTING_CHECK( magma_init() );
@@ -66,26 +77,19 @@ int main(int argc, char* argv[]) {
 	TESTING_CHECK( magma_imalloc_cpu( &iwork, liwork ));
 
 	// Copy matrix into MAGMA pinned memory
-	CsvParser* csvparser = CsvParser_new(fileName, ",", 0);
-	CsvRow *row;
-
-	int rowIdx = 0;
-	while ((row = CsvParser_getRow(csvparser))) {
-		const char **rowFields = CsvParser_getFields(row);
-		for (int i = 0; i < CsvParser_getNumFields(row); i++) {
-			double d;
-			sscanf(rowFields[i], "%lf", &d);
-			h_R[rowIdx * 13362 + i] = d;
-			CsvParser_destroy_now(row);
-		}
-	}	
-	CsvParser_destroy(csvparser);
+	lapackf77_dlacpy( MagmaFullStr, &N, &N, pMatBuffer, &lda, h_R, &lda);
 
 	// Carry out calculations
 	magma_dsyevd_m(ngpu, jobz, uplo, N, h_R, lda, w1, h_work, lwork, iwork, liwork, &info);
 	if (info != 0) {
 		printf("lapackf77_dsyevd returned error: %s.\n", magma_strerror( info ));
 		exit(1);
+	}
+
+	// Copy result back
+	lapackf77_dlacpy( MagmaFullStr, &N, &N, h_R, &lda, pMatBuffer, &lda);
+	for (int i = 0; i < N; i++) {
+		pEigVal[i] = w1[i];
 	}
 
 	// Finish
