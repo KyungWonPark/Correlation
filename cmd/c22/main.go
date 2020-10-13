@@ -92,7 +92,7 @@ func main() {
 	eigVec := mat64.NewDense(13362, 13362, nil)
 
 	var thr float64
-	for thr = 0; thr < 1.0; thr += 0.05 {
+	for thr = 0; thr < 0.015; thr += 0.05 {
 		pl.Threshold(avgedMat, thredMat, thr)
 		pl.Laplacian(thredMat)
 
@@ -126,6 +126,7 @@ func main() {
 		fmt.Printf("Smallest Non-Zero EigenValue: %g\n", nZSEigVal)
 
 		io.Mat64toCSV(RESULTDIR+"/clustering-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVecStrip)
+		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
 	}
 
 	matBufferShm.Detach(pMatBuffer)
