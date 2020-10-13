@@ -108,9 +108,25 @@ func main() {
 		cArrtomat64(eigVal, pEigVal)
 		cArrtomat64(eigVec, pMatBuffer)
 
-		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
-
 		fmt.Printf("Threshold: %f Writing results...\n", thr)
+
+		eigValMat := mat64.NewDense(13362, 13362, nil)
+		for i := 0; i < 13362; i++ {
+			eigValMat.Set(i, i, eigVal.At(i, i))
+		}
+
+		// A * U
+		result0 := mat64.NewDense(13362, 13362, nil)
+		result0.Mul(thredMat, eigVec)
+
+		// U * S
+		result1 := mat64.NewDense(13362, 13362, nil)
+		result1.Mul(eigVec, eigValMat)
+
+		isSame := mat64.EqualApprox(result0, result1, 0.000001)
+		if !isSame {
+			fmt.Printf("Thr: %f / Eigenproblem failed!!\n", thr)
+		}
 
 		nZSEigVal, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
 
@@ -122,11 +138,9 @@ func main() {
 		}
 
 		sort.Float64s(tmp)
-
 		fmt.Printf("Smallest Non-Zero EigenValue: %g\n", nZSEigVal)
 
 		io.Mat64toCSV(RESULTDIR+"/clustering-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVecStrip)
-		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
 	}
 
 	matBufferShm.Detach(pMatBuffer)
