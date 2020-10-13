@@ -116,7 +116,7 @@ func main() {
 
 		eigValMat := mat64.NewDense(13362, 13362, nil)
 		for i := 0; i < 13362; i++ {
-			eigValMat.Set(i, i, eigVal.At(i, i))
+			eigValMat.Set(i, i, eigVal.At(i, 0))
 		}
 
 		// A * U
