@@ -15,8 +15,8 @@ func threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr float64, order
 		if ok {
 			for t := 0; t < inputCols; t++ {
 				value := inputMat.At(index, t)
-				if thr > value {
-					value = 0
+				if thr >= value {
+					value = 0.0000001 // adding epsilon
 				}
 
 				outputMat.Set(index, t, value)

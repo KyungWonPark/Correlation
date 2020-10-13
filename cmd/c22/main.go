@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/KyungWonPark/Correlation/internal/anal"
 	"github.com/KyungWonPark/Correlation/internal/calc"
 	"github.com/KyungWonPark/Correlation/internal/io"
 	"github.com/ghetzel/shmtool/shm"
@@ -107,9 +108,15 @@ func main() {
 		cArrtomat64(eigVec, pMatBuffer)
 
 		fmt.Printf("Threshold: %f Writing results...\n", thr)
-		io.Mat64toCSV(RESULTDIR+"/c2-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
-		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
-		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
+
+		_, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
+
+		eigVecStrip := mat64.NewDense(13362, 1, nil)
+		for i := 0; i < 13362; i++ {
+			eigVecStrip.Set(i, 0, eigVec.At(i, nZSEigValIdx))
+		}
+
+		io.Mat64toCSV(RESULTDIR+"/clustering-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVecStrip)
 	}
 
 	matBufferShm.Detach(pMatBuffer)
