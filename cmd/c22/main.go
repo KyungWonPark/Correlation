@@ -108,6 +108,8 @@ func main() {
 		cArrtomat64(eigVal, pEigVal)
 		cArrtomat64(eigVec, pMatBuffer)
 
+		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
+
 		fmt.Printf("Threshold: %f Writing results...\n", thr)
 
 		nZSEigVal, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
