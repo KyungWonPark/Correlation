@@ -23,7 +23,7 @@ func GetNonZeroSmallestEigVal(eigVal *mat64.Dense) (float64, int) {
 
 	n, _ := eigVal.Dims()
 	for i := 0; i < n; i++ {
-		val := eigVal.At(i, 1)
+		val := eigVal.At(i, 0)
 		absVal := math.Abs(val)
 
 		if absVal > 0.000000 {
@@ -46,7 +46,7 @@ func GetCluster(eigVal *mat64.Dense, eigVec *mat64.Dense) Cluster {
 
 	n, _ := eigVal.Dims()
 	for i := 0; i < n; i++ {
-		val := eigVal.At(i, 1)
+		val := eigVal.At(i, 0)
 		absVal := math.Abs(val)
 
 		if absVal > 0.000000 {
