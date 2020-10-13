@@ -96,6 +96,8 @@ func main() {
 		pl.Threshold(avgedMat, thredMat, thr)
 		pl.Laplacian(thredMat)
 
+		io.Mat64toCSV(RESULTDIR+"/laplacian-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
+
 		mat64tocArr(thredMat, pMatBuffer)
 
 		// Call MAGMA
