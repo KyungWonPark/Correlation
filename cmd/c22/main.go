@@ -112,7 +112,7 @@ func main() {
 		cArrtomat64(eigVal, pEigVal)
 		cArrtomat64(eigVec, pMatBuffer)
 
-		fmt.Printf("Threshold: %f Writing results...\n", thr)
+		fmt.Printf("Threshold: %f Checking results...\n", thr)
 
 		eigValMat := mat64.NewDense(13362, 13362, nil)
 		for i := 0; i < 13362; i++ {
@@ -130,6 +130,9 @@ func main() {
 		isSame := mat64.EqualApprox(result0, result1, 0.000001)
 		if !isSame {
 			fmt.Printf("Thr: %f / Eigenproblem failed!!\n", thr)
+			diff := mat64.NewDense(13362, 13362, nil)
+			diff.Sub(result0, result1)
+			fmt.Printf("Diff: %g\n", mat64.Max(diff))
 		}
 
 		nZSEigVal, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
