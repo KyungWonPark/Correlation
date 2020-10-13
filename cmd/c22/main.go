@@ -118,7 +118,7 @@ func main() {
 		eigVecStrip := mat64.NewDense(13362, 1, tmp)
 
 		for i := 0; i < 13362; i++ {
-			eigVecStrip.Set(i, 0, eigVec.At(nZSEigValIdx, i))
+			eigVecStrip.Set(i, 0, eigVec.At(i, nZSEigValIdx))
 		}
 
 		sort.Float64s(tmp)
