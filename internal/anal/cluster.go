@@ -24,23 +24,29 @@ func GetNonZeroSmallestEigVal(eigVal *mat64.Dense) (float64, int) {
 		log.Fatal("[GetNonZeroSmallestEigVal] n is smaller than 2.")
 	}
 
-	type eig struct {
-		idx   int
-		value float64
-	}
-
-	temp := make([]eig, n)
+	smallest := 1000000.0
+	idxSmallest := -1
 
 	for i := 0; i < n; i++ {
-		temp[i].idx = i
-		temp[i].value = math.Abs(eigVal.At(i, 0))
+		val := math.Abs(eigVal.At(i, 0))
+		if val < smallest {
+			smallest = val
+			idxSmallest = i
+		}
 	}
 
-	sort.Slice(temp, func(i int, j int) bool {
-		return temp[i].value < temp[j].value
-	})
+	smallest2nd := 10000000.0
+	idxSmallest2nd := -1
 
-	return temp[1].value, temp[1].idx
+	for i := 0; i < n; i++ {
+		val := math.Abs(eigVal.At(i, 0))
+		if val < smallest && i != idxSmallest {
+			smallest2nd = val
+			idxSmallest2nd = i
+		}
+	}
+
+	return smallest2nd, idxSmallest2nd
 }
 
 // GetCluster creates cluster from eigenvalue and eigenvectors
