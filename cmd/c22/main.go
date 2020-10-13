@@ -121,6 +121,8 @@ func main() {
 
 		sort.Float64s(tmp)
 
+		fmt.Printf("Smallest Non-Zero EigenValue: %f\n", eigVal.At(nZSEigValIdx, 0))
+
 		io.Mat64toCSV(RESULTDIR+"/clustering-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVecStrip)
 	}
 
