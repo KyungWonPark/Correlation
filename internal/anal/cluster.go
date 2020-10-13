@@ -37,7 +37,7 @@ func GetNonZeroSmallestEigVal(eigVal *mat64.Dense) (float64, int) {
 	}
 
 	sort.Slice(temp, func(i int, j int) bool {
-		return temp[i].value > temp[j].value
+		return temp[i].value < temp[j].value
 	})
 
 	return temp[1].value, temp[1].idx
