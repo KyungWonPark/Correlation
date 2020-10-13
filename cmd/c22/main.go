@@ -96,8 +96,6 @@ func main() {
 		pl.Threshold(avgedMat, thredMat, thr)
 		pl.Laplacian(thredMat)
 
-		io.Mat64toCSV(RESULTDIR+"/laplacian-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
-
 		mat64tocArr(thredMat, pMatBuffer)
 
 		// Call MAGMA
@@ -112,7 +110,7 @@ func main() {
 
 		fmt.Printf("Threshold: %f Writing results...\n", thr)
 
-		_, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
+		nZSEigVal, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
 
 		tmp := make([]float64, 13362)
 		eigVecStrip := mat64.NewDense(13362, 1, tmp)
@@ -123,7 +121,7 @@ func main() {
 
 		sort.Float64s(tmp)
 
-		fmt.Printf("Smallest Non-Zero EigenValue: %g\n", eigVal.At(nZSEigValIdx, 0))
+		fmt.Printf("Smallest Non-Zero EigenValue: %g\n", nZSEigVal)
 
 		io.Mat64toCSV(RESULTDIR+"/clustering-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVecStrip)
 	}
