@@ -40,7 +40,7 @@ func GetNonZeroSmallestEigVal(eigVal *mat64.Dense) (float64, int) {
 
 	for i := 0; i < n; i++ {
 		val := math.Abs(eigVal.At(i, 0))
-		if val < smallest && i != idxSmallest {
+		if val < smallest2nd && i != idxSmallest {
 			smallest2nd = val
 			idxSmallest2nd = i
 		}
