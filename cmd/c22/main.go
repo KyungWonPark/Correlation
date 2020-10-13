@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"sort"
 
 	"github.com/KyungWonPark/Correlation/internal/anal"
 	"github.com/KyungWonPark/Correlation/internal/calc"
@@ -111,10 +112,14 @@ func main() {
 
 		_, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
 
-		eigVecStrip := mat64.NewDense(13362, 1, nil)
+		tmp := make([]float64, 13362)
+		eigVecStrip := mat64.NewDense(13362, 1, tmp)
+
 		for i := 0; i < 13362; i++ {
 			eigVecStrip.Set(i, 0, eigVec.At(i, nZSEigValIdx))
 		}
+
+		sort.Float64s(tmp)
 
 		io.Mat64toCSV(RESULTDIR+"/clustering-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVecStrip)
 	}
