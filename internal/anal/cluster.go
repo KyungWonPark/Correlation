@@ -1,6 +1,7 @@
 package anal
 
 import (
+	"log"
 	"math"
 	"sort"
 
@@ -17,45 +18,34 @@ type tempCluster struct {
 
 // GetNonZeroSmallestEigVal returns... as its name says
 func GetNonZeroSmallestEigVal(eigVal *mat64.Dense) (float64, int) {
-	var nonZeroSmallestEigVal float64
-	nonZeroSmallestEigVal = 10
-	idxNonZeroSmallestEigVal := -1
-
 	n, _ := eigVal.Dims()
-	for i := 0; i < n; i++ {
-		val := eigVal.At(i, 0)
-		absVal := math.Abs(val)
 
-		if absVal > 0.000000 {
-			if absVal < nonZeroSmallestEigVal {
-				nonZeroSmallestEigVal = absVal
-				idxNonZeroSmallestEigVal = i
-			}
-		}
+	if n < 2 {
+		log.Fatal("[GetNonZeroSmallestEigVal] n is smaller than 2.")
 	}
 
-	return nonZeroSmallestEigVal, idxNonZeroSmallestEigVal
+	type eig struct {
+		idx   int
+		value float64
+	}
+
+	temp := make([]eig, n)
+
+	for i := 0; i < n; i++ {
+		temp[i].idx = i
+		temp[i].value = math.Abs(eigVal.At(i, 0))
+	}
+
+	sort.Slice(temp, func(i int, j int) bool {
+		return temp[i].value > temp[j].value
+	})
+
+	return temp[1].value, temp[1].idx
 }
 
 // GetCluster creates cluster from eigenvalue and eigenvectors
 func GetCluster(eigVal *mat64.Dense, eigVec *mat64.Dense) Cluster {
-	var nonZeroSmallestEigVal float64
-	nonZeroSmallestEigVal = 10
-
-	idxNonZeroSmallestEigVal := -1
-
-	n, _ := eigVal.Dims()
-	for i := 0; i < n; i++ {
-		val := eigVal.At(i, 0)
-		absVal := math.Abs(val)
-
-		if absVal > 0.000000 {
-			if absVal < nonZeroSmallestEigVal {
-				nonZeroSmallestEigVal = absVal
-				idxNonZeroSmallestEigVal = i
-			}
-		}
-	}
+	_, idxNonZeroSmallestEigVal := GetNonZeroSmallestEigVal(eigVal)
 
 	var c tempCluster
 
