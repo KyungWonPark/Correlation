@@ -12,9 +12,13 @@ import (
 	"github.com/KyungWonPark/Correlation/internal/io"
 	"github.com/ghetzel/shmtool/shm"
 	"github.com/gonum/matrix/mat64"
+
+	"gonum.org/v1/gonum/blas/blas64"
+	blas_netlib "gonum.org/v1/netlib/blas/netlib"
 )
 
 func main() {
+	blas64.Use(blas_netlib.Implementation{})
 
 	DATADIR := os.Getenv("DATA")
 	RESULTDIR := os.Getenv("RESULT")
