@@ -14,6 +14,8 @@ import (
 )
 
 func main() {
+	// blas64.Use(blas_netlib.Implementation{})
+
 	DATADIR := os.Getenv("DATA")
 	RESULTDIR := os.Getenv("RESULT")
 
@@ -138,20 +140,29 @@ func main() {
 			fmt.Printf("Max(| U^T * A - S * U^T |) : %g\n", mat64.Max(diff))
 		}
 
-		nZSEigVal, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
+		smallestIndices := anal.GetSmallestEigVals(eigVal, 300)
 
-		tmp := make([]float64, 13362)
-		eigVecStrip := mat64.NewDense(13362, 1, tmp)
+		savEigVals := mat64.NewDense(300, 1, nil)
+		savEigVecs := mat64.NewDense(300, 13362, nil)
 
-		for i := 0; i < 13362; i++ {
-			eigVecStrip.Set(i, 0, eigVec.At(nZSEigValIdx, i))
+		for i := 0; i < len(smallestIndices); i++ {
+			idx := smallestIndices[i]
+
+			var sign float64
+			sign = 1.0
+			if eigVal.At(idx, 0) < 0 {
+				sign = -1.0
+			}
+
+			savEigVals.Set(i, 0, sign*eigVal.At(idx, 0))
+
+			for j := 0; j < 13362; j++ {
+				savEigVecs.Set(i, j, sign*eigVec.At(idx, j))
+			}
 		}
 
-		fmt.Printf("Smallest Non-Zero EigenValue: %g\n", nZSEigVal)
-
-		io.Mat64toCSV(RESULTDIR+"/clustering-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVecStrip)
-		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
-		io.Mat64toCSV(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
+		io.Mat64toCSV(RESULTDIR+"/selected-eigVals-thr-"+fmt.Sprintf("%f", thr)+".csv", savEigVals)
+		io.Mat64toCSV(RESULTDIR+"/selected-eigVecs-thr-"+fmt.Sprintf("%f", thr)+".csv", savEigVecs)
 	}
 
 	matBufferShm.Detach(pMatBuffer)
