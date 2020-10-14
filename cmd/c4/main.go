@@ -56,7 +56,30 @@ func main() {
 	// Calculation is finished.
 	matPrint("Original", problemMat)
 	matPrint("EigenValue", eigVal)
-	matPrint("EigenVector", eigVec)
+	matPrint("U^T", eigVec)
+
+	eigValMat := mat64.NewDense(3, 3, nil)
+	for i := 0; i < 3; i++ {
+		eigValMat.Set(i, i, eigVal.At(i, 0))
+	}
+
+	// U^T * A
+	result0 := mat64.NewDense(3, 3, nil)
+	result0.Mul(eigVec, problemMat)
+	matPrint("U^T * A", result0)
+
+	// S * U^T
+	result1 := mat64.NewDense(3, 3, nil)
+	result1.Mul(eigValMat, eigVec)
+	matPrint("S * U^T", result1)
+
+	isSame := mat64.EqualApprox(result0, result1, 0.000001)
+	if !isSame {
+		fmt.Printf("Eigenproblem failed!!\n")
+		diff := mat64.NewDense(3, 3, nil)
+		diff.Sub(result0, result1)
+		fmt.Printf("Diff: %g\n", mat64.Max(diff))
+	}
 
 	matBufferShm.Detach(pMatBuffer)
 	matBufferShm.Destroy()

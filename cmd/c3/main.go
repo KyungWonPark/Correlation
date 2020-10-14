@@ -114,11 +114,11 @@ func main() {
 			eigValMat.Set(i, i, eigVal.At(i, 0))
 		}
 
-		// A * U
+		// U^T * A
 		result0 := mat64.NewDense(13362, 13362, nil)
 		result0.Mul(eigVec, thredMat)
 
-		// U * S
+		// S * U^T
 		result1 := mat64.NewDense(13362, 13362, nil)
 		result1.Mul(eigValMat, eigVec)
 
