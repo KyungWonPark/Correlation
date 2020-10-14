@@ -105,7 +105,7 @@ func main() {
 		}
 
 		cArrtomat64(eigVal, pEigVal)
-		cArrtomat64(eigVec, pMatBuffer)
+		cArrtomat64(eigVec, pMatBuffer) // eigVec == U^T
 
 		fmt.Printf("Threshold: %f Checking results...\n", thr)
 
@@ -116,11 +116,11 @@ func main() {
 
 		// A * U
 		result0 := mat64.NewDense(13362, 13362, nil)
-		result0.Mul(thredMat, eigVec)
+		result0.Mul(eigVec, thredMat)
 
 		// U * S
 		result1 := mat64.NewDense(13362, 13362, nil)
-		result1.Mul(eigVec, eigValMat)
+		result1.Mul(eigValMat, eigVec)
 
 		isSame := mat64.EqualApprox(result0, result1, 0.000001)
 		if !isSame {
@@ -136,7 +136,7 @@ func main() {
 		eigVecStrip := mat64.NewDense(13362, 1, tmp)
 
 		for i := 0; i < 13362; i++ {
-			eigVecStrip.Set(i, 0, eigVec.At(i, nZSEigValIdx))
+			eigVecStrip.Set(i, 0, eigVec.At(nZSEigValIdx, i))
 		}
 
 		sort.Float64s(tmp)
