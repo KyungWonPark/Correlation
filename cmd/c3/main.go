@@ -11,6 +11,8 @@ import (
 	"github.com/KyungWonPark/Correlation/internal/io"
 	"github.com/ghetzel/shmtool/shm"
 	"github.com/gonum/matrix/mat64"
+	// "gonum.org/v1/gonum/blas/blas64"
+	// blas_netlib "gonum.org/v1/netlib/blas/netlib"
 )
 
 func main() {
@@ -161,6 +163,7 @@ func main() {
 			}
 		}
 
+		fmt.Println("Writing results...")
 		io.Mat64toCSV(RESULTDIR+"/selected-eigVals-thr-"+fmt.Sprintf("%f", thr)+".csv", savEigVals)
 		io.Mat64toCSV(RESULTDIR+"/selected-eigVecs-thr-"+fmt.Sprintf("%f", thr)+".csv", savEigVecs)
 	}
