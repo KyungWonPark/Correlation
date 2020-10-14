@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"sort"
 
 	"github.com/KyungWonPark/Correlation/internal/anal"
 	"github.com/KyungWonPark/Correlation/internal/calc"
@@ -96,13 +95,13 @@ func main() {
 		pl.Laplacian(thredMat)
 
 		// Check Symmetry
-		for i := 0; i < 13362; i++ {
-			for j := 0; j < 13362; j++ {
-				if thredMat.At(i, j) != thredMat.At(j, i) {
-					fmt.Printf("Warning mat[%d][%d]: %f | mat[%d][%d]: %f\n", i, j, thredMat.At(i, j), j, i, thredMat.At(j, i))
-				}
-			}
-		}
+		// for i := 0; i < 13362; i++ {
+		//	for j := 0; j < 13362; j++ {
+		//		if thredMat.At(i, j) != thredMat.At(j, i) {
+		//			fmt.Printf("Warning mat[%d][%d]: %f | mat[%d][%d]: %f\n", i, j, thredMat.At(i, j), j, i, thredMat.At(j, i))
+		//		}
+		//	}
+		//}
 
 		mat64tocArr(thredMat, pMatBuffer)
 
@@ -133,10 +132,10 @@ func main() {
 
 		isSame := mat64.EqualApprox(result0, result1, 0.000001)
 		if !isSame {
-			fmt.Printf("Thr: %f / Eigenproblem failed!!\n", thr)
+			fmt.Printf("Thr: %f / Eigenproblem failed!\n", thr)
 			diff := mat64.NewDense(13362, 13362, nil)
 			diff.Sub(result0, result1)
-			fmt.Printf("Diff: %g\n", mat64.Max(diff))
+			fmt.Printf("Max(| U^T * A - S * U^T |) : %g\n", mat64.Max(diff))
 		}
 
 		nZSEigVal, nZSEigValIdx := anal.GetNonZeroSmallestEigVal(eigVal)
@@ -148,7 +147,6 @@ func main() {
 			eigVecStrip.Set(i, 0, eigVec.At(nZSEigValIdx, i))
 		}
 
-		sort.Float64s(tmp)
 		fmt.Printf("Smallest Non-Zero EigenValue: %g\n", nZSEigVal)
 
 		io.Mat64toCSV(RESULTDIR+"/clustering-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVecStrip)
