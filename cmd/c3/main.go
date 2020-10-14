@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 
 	"github.com/KyungWonPark/Correlation/internal/anal"
 	"github.com/KyungWonPark/Correlation/internal/calc"
@@ -17,6 +18,8 @@ import (
 
 func main() {
 	// blas64.Use(blas_netlib.Implementation{})
+	thrStart, _ := strconv.ParseFloat(os.Args[1], 64)
+	thrEnd, _ := strconv.ParseFloat(os.Args[2], 64)
 
 	DATADIR := os.Getenv("DATA")
 	RESULTDIR := os.Getenv("RESULT")
@@ -94,7 +97,7 @@ func main() {
 	eigVec := mat64.NewDense(13362, 13362, nil)
 
 	var thr float64
-	for thr = 0; thr < 0.015; thr += 0.05 {
+	for thr = thrStart; thr < thrEnd; thr += 0.05 {
 		pl.Threshold(avgedMat, thredMat, thr)
 		pl.Laplacian(thredMat)
 
@@ -142,30 +145,21 @@ func main() {
 			fmt.Printf("Max(| U^T * A - S * U^T |) : %g\n", mat64.Max(diff))
 		}
 
-		smallestIndices := anal.GetSmallestEigVals(eigVal, 300)
+		nzSmEigVal, idxNzSmEigVal := anal.GetNonZeroSmallestEigVal(eigVal)
+		nzSmEigVec := mat64.NewDense(13362, 1, nil)
 
-		savEigVals := mat64.NewDense(300, 1, nil)
-		savEigVecs := mat64.NewDense(300, 13362, nil)
+		var sign float64
+		sign = 1.0
+		if nzSmEigVal < 0 {
+			sign = -1.0
+		}
 
-		for i := 0; i < len(smallestIndices); i++ {
-			idx := smallestIndices[i]
-
-			var sign float64
-			sign = 1.0
-			if eigVal.At(idx, 0) < 0 {
-				sign = -1.0
-			}
-
-			savEigVals.Set(i, 0, sign*eigVal.At(idx, 0))
-
-			for j := 0; j < 13362; j++ {
-				savEigVecs.Set(i, j, sign*eigVec.At(idx, j))
-			}
+		for i := 0; i < 13362; i++ {
+			nzSmEigVec.Set(i, 0, sign*eigVec.At(idxNzSmEigVal, i))
 		}
 
 		fmt.Println("Writing results...")
-		io.Mat64toCSV(RESULTDIR+"/selected-eigVals-thr-"+fmt.Sprintf("%f", thr)+".csv", savEigVals)
-		io.Mat64toCSV(RESULTDIR+"/selected-eigVecs-thr-"+fmt.Sprintf("%f", thr)+".csv", savEigVecs)
+		io.Mat64toCSV(RESULTDIR+"/configuration-thr-"+fmt.Sprintf("%f", thr)+".csv", nzSmEigVec)
 	}
 
 	matBufferShm.Detach(pMatBuffer)
