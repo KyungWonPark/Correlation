@@ -44,7 +44,7 @@ func main() {
 	mat64tocArr(problemMat, pMatBuffer)
 
 	// Call MAGMA
-	cmd := exec.Command("files/magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
+	cmd := exec.Command("files/magma", "3", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
 	err = cmd.Run()
 	if err != nil {
 		log.Fatalf("MAGMA execution has failed: %s\n", err)
