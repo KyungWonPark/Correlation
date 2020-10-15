@@ -102,13 +102,13 @@ func main() {
 		pl.Laplacian(thredMat)
 
 		// Check Symmetry
-		// for i := 0; i < 13362; i++ {
-		//	for j := 0; j < 13362; j++ {
-		//		if thredMat.At(i, j) != thredMat.At(j, i) {
-		//			fmt.Printf("Warning mat[%d][%d]: %f | mat[%d][%d]: %f\n", i, j, thredMat.At(i, j), j, i, thredMat.At(j, i))
-		//		}
-		//	}
-		//}
+		for i := 0; i < 13362; i++ {
+			for j := 0; j < 13362; j++ {
+				if thredMat.At(i, j) != thredMat.At(j, i) {
+					log.Fatalf("Warning mat[%d][%d]: %f | mat[%d][%d]: %f\n", i, j, thredMat.At(i, j), j, i, thredMat.At(j, i))
+				}
+			}
+		}
 
 		mat64tocArr(thredMat, pMatBuffer)
 
