@@ -144,18 +144,37 @@ func main() {
 			fmt.Printf("Max(| U^T * A - S * U^T |) : %g\n", mat64.Max(diff))
 		}
 
-		row := mat64.NewDense(13362, 1, nil)
-		col := mat64.NewDense(13362, 1, nil)
+		eigVec1st := mat64.NewDense(13362, 1, nil)
+		eigVec2nd := mat64.NewDense(13362, 1, nil)
 
 		for i := 0; i < 13362; i++ {
-			row.Set(i, 0, eigVec.At(1, i))
-			col.Set(i, 0, eigVec.At(i, 1))
+			eigVec1st.Set(i, 0, eigVec.At(0, i))
+			eigVec2nd.Set(i, 0, eigVec.At(1, i))
+		}
+
+		// A * v1
+		result2 := mat64.NewDense(13362, 1, nil)
+		result0.Mul(thredMat, eigVec2nd)
+
+		// lambda * v1
+		result3 := mat64.NewDense(13362, 1, nil)
+		for i := 0; i < 13362; i++ {
+			val := eigVal.At(1, 0) * eigVec2nd.At(i, 0)
+			result3.Set(i, 0, val)
+		}
+
+		isSame = mat64.EqualApprox(result2, result3, 0.000001)
+		if !isSame {
+			fmt.Printf("Thr: %f / A*v != lambda * v !!!!!!!!!!!!!!!!\n", thr)
+			diff := mat64.NewDense(13362, 13362, nil)
+			diff.Sub(result2, result3)
+			fmt.Printf("Max(| A*v - lambda * v |) : %g\n", mat64.Max(diff))
 		}
 
 		fmt.Println("Writing results...")
-		io.Mat64toCSV(RESULTDIR+"/eigVec-2nd-row-thr-"+fmt.Sprintf("%f", thr)+".csv", row)
-		io.Mat64toCSV(RESULTDIR+"/eigVec-2nd-col-thr-"+fmt.Sprintf("%f", thr)+".csv", col)
 		io.Mat64toCSV(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
+		io.Mat64toCSV(RESULTDIR+"/eigVec-1st-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec1st)
+		io.Mat64toCSV(RESULTDIR+"/eigVec-2nd-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec2nd)
 	}
 
 	matBufferShm.Detach(pMatBuffer)
