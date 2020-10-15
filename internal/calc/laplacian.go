@@ -1,6 +1,7 @@
 package calc
 
 import (
+	"log"
 	"sync"
 
 	"github.com/gonum/matrix/mat64"
@@ -16,9 +17,6 @@ func laplacian(inputMat *mat64.Dense, order <-chan int, wg *sync.WaitGroup) {
 
 			for i := 0; i < inputCols; i++ {
 				degree += inputMat.At(index, i)
-			}
-
-			for i := 0; i < inputCols; i++ {
 				value := inputMat.At(index, i)
 				inputMat.Set(index, i, -value)
 			}
@@ -26,6 +24,15 @@ func laplacian(inputMat *mat64.Dense, order <-chan int, wg *sync.WaitGroup) {
 			value := inputMat.At(index, index)
 			value += degree
 			inputMat.Set(index, index, value)
+
+			var sum float64
+			for i := 0; i < inputCols; i++ {
+				sum += inputMat.At(index, i)
+			}
+
+			if sum != 0 {
+				log.Fatalf("[Laplacian] Sum of row in L isn't 0 but %f\n", sum)
+			}
 
 			wg.Done()
 		} else {
