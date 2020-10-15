@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"strconv"
 
-	"github.com/KyungWonPark/Correlation/internal/anal"
 	"github.com/KyungWonPark/Correlation/internal/calc"
 	"github.com/KyungWonPark/Correlation/internal/io"
 	"github.com/ghetzel/shmtool/shm"
@@ -145,21 +144,18 @@ func main() {
 			fmt.Printf("Max(| U^T * A - S * U^T |) : %g\n", mat64.Max(diff))
 		}
 
-		nzSmEigVal, idxNzSmEigVal := anal.GetNonZeroSmallestEigVal(eigVal)
-		nzSmEigVec := mat64.NewDense(13362, 1, nil)
-
-		var sign float64
-		sign = 1.0
-		if nzSmEigVal < 0 {
-			sign = -1.0
-		}
+		row := mat64.NewDense(13362, 1, nil)
+		col := mat64.NewDense(13362, 1, nil)
 
 		for i := 0; i < 13362; i++ {
-			nzSmEigVec.Set(i, 0, sign*eigVec.At(idxNzSmEigVal, i))
+			row.Set(i, 0, eigVec.At(1, i))
+			col.Set(i, 0, eigVec.At(i, 1))
 		}
 
 		fmt.Println("Writing results...")
-		io.Mat64toCSV(RESULTDIR+"/configuration-thr-"+fmt.Sprintf("%f", thr)+".csv", nzSmEigVec)
+		io.Mat64toCSV(RESULTDIR+"/eigVec-2nd-row-thr-"+fmt.Sprintf("%f", thr)+".csv", row)
+		io.Mat64toCSV(RESULTDIR+"/eigVec-2nd-col-thr-"+fmt.Sprintf("%f", thr)+".csv", col)
+		io.Mat64toCSV(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
 	}
 
 	matBufferShm.Detach(pMatBuffer)
