@@ -154,7 +154,7 @@ func main() {
 
 		// A * v1
 		result2 := mat64.NewDense(13362, 1, nil)
-		result0.Mul(thredMat, eigVec2nd)
+		result2.Mul(thredMat, eigVec2nd)
 
 		// lambda * v1
 		result3 := mat64.NewDense(13362, 1, nil)
