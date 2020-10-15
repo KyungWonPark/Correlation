@@ -1,7 +1,8 @@
 package calc
 
 import (
-	"log"
+	"fmt"
+	"math"
 	"sync"
 
 	"github.com/gonum/matrix/mat64"
@@ -30,8 +31,8 @@ func laplacian(inputMat *mat64.Dense, order <-chan int, wg *sync.WaitGroup) {
 				sum += inputMat.At(index, i)
 			}
 
-			if sum != 0 {
-				log.Fatalf("[Laplacian] Sum of row in L isn't 0 but %f\n", sum)
+			if math.Abs(sum) > 0.0000001 {
+				fmt.Printf("[Laplacian] Sum of row in L isn't 0 but %f\n", sum)
 			}
 
 			wg.Done()
