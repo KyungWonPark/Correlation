@@ -60,8 +60,8 @@ func parseLine(matrix *mat64.Dense, parsed []string, offset int, row int, wg *sy
 		num += (strconv.FormatFloat(matrix.At(row+offset, i), 'g', -1, 64) + ", ")
 	}
 
-	strings.TrimSuffix(num, ", ")
-	parsed[offset] += num
+	num2 := strings.TrimSuffix(num, ", ")
+	parsed[offset] += num2
 
 	wg.Done()
 

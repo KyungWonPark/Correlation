@@ -78,6 +78,9 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 		pl.Avg(accedMat, avgedMat, float64(len(fileList)))
 	}
 
+	fmt.Println("Writing C2-tilda")
+	io.Mat64toCSV(RESULTDIR+"/c2-tilda.csv", avgedMat)
+
 	matBufferShm, err := shm.Create(13362 * 13362 * 8)
 	if err != nil {
 		log.Fatalf("Failed to create shared memory region: %s\n", err)
@@ -107,8 +110,9 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 
 	var thr float64
 	for thr = thrStart; thr < thrEnd; thr += thrItv {
+		fmt.Printf("Processing: thr - %f\n", thr)
 		pl.Threshold(avgedMat, thredMat, thr)
-		pl.Laplacian(thredMat)
+		pl.Laplacian(thredMat) // Now thredMat is a Laplacian matrix
 
 		// Check Symmetry
 		if isDebugMode {
@@ -123,6 +127,7 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 
 		mat64tocArr(thredMat, pMatBuffer) // Copy thresholded matrix to MAGMA matrix buffer
 
+		fmt.Printf("Diagonalizing...")
 		// Call MAGMA
 		cmd := exec.Command("files/magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
 		err := cmd.Run()
@@ -159,12 +164,12 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 			}
 		}
 
-		fmt.Println("Writing C2-tilda")
-		io.Mat64toCSV(RESULTDIR+"/c2-tilda-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
 		fmt.Println("Writing Eigen value")
 		io.Mat64toCSV(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
 		fmt.Println("Writing Eigen vector")
 		io.Mat64toCSV(RESULTDIR+"/eigen-vector-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
+
+		fmt.Println("---- ---- ---- ---- ---- ---- ---- ----")
 	}
 
 	matBufferShm.Detach(pMatBuffer)
