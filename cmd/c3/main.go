@@ -159,13 +159,12 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 			}
 		}
 
-		// io.Mat64toCSV(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
 		fmt.Println("Writing C2-tilda")
-		io.F64SliceToBin(RESULTDIR+"/c2-tilda-thr-"+fmt.Sprintf("%f", thr)+".bin", arrThredMat)
+		io.Mat64toCSV(RESULTDIR+"/c2-tilda-thr-"+fmt.Sprintf("%f", thr)+".csv", thredMat)
 		fmt.Println("Writing Eigen value")
-		io.F64SliceToBin(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".bin", arrEigVal)
+		io.Mat64toCSV(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
 		fmt.Println("Writing Eigen vector")
-		io.F64SliceToBin(RESULTDIR+"/eigen-vector-thr-"+fmt.Sprintf("%f", thr)+".bin", arrEigVec)
+		io.Mat64toCSV(RESULTDIR+"/eigen-vector-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
 	}
 
 	matBufferShm.Detach(pMatBuffer)
