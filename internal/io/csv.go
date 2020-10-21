@@ -6,6 +6,7 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/gonum/matrix/mat64"
@@ -54,12 +55,13 @@ func Mat64toCSV(path string, matrix *mat64.Dense) {
 func parseLine(matrix *mat64.Dense, parsed []string, offset int, row int, wg *sync.WaitGroup) {
 	_, cols := matrix.Dims()
 
+	num := ""
 	for i := 0; i < cols; i++ {
-		parsed[offset] += strconv.FormatFloat(matrix.At(row+offset, i), 'g', -1, 64)
-		if i != cols-1 {
-			parsed[offset] += ", "
-		}
+		num += (strconv.FormatFloat(matrix.At(row+offset, i), 'g', -1, 64) + ", ")
 	}
+
+	strings.TrimSuffix(num, ", ")
+	parsed[offset] += num
 
 	wg.Done()
 
