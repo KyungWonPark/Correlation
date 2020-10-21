@@ -201,4 +201,4 @@ for thr in thrs:
     cls = getClusters(eigVal, eigVec)
     df = dfNCluster(cls, greyList, 12)
 
-    save3DFigure(OUTPUTDIR + "thr-" + thr + "-12-largest-clusters.html")
+    save3DFigure(OUTPUTDIR + "thr-" + thr + "-12-largest-clusters.html", df)
