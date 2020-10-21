@@ -185,7 +185,6 @@ def save3DFigure(path, df):
 RESULTDIR = "/home/iksoochang2/kw-park/Result/"
 OUTPUTDIR = "/home/iksoochang2/kw-park/Result/Analysis/"
 
-c2 = loadCSV(RESULTDIR + "c2-tilda.csv")
 greyList = loadCSV(RESULTDIR + "greyList.txt")
 
 thrs = [
