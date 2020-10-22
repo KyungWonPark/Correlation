@@ -90,6 +90,13 @@ def getANC(clusters):
         
     return accSize / len(clusters)
 
+def dotProd(v0, v1):
+    acc = 0
+    for i in range(len(v0)):
+        acc = acc + (v0[i] * v1[i])
+
+    return acc
+
 def getWCC(clusters, c2):
     accAvgPearson = 0
     for i in range(len(clusters)):
@@ -101,7 +108,7 @@ def getWCC(clusters, c2):
             for idx1 in range(0, idx0 + 1):
                 idxFrom = c.members[idx0]
                 idxTo = c.members[idx1]
-                accPearson = accPearson + c2[idxFrom][idxTo]
+                accPearson = accPearson + dotProd(c2[idxFrom], c2[idxTo])
  
         accAvgPearson = accAvgPearson + (accPearson / (n * (n + 1) / 2))
         
