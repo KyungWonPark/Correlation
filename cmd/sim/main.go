@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
 	"runtime"
@@ -33,10 +34,14 @@ func main() {
 
 	c2 := mat64.NewDense(13362, 13362, nil)
 	sim := mat64.NewDense(13362, 13362, nil)
+
 	records := readCsvFile(RESULTDIR + "/c2-tilda.csv")
+	fmt.Println("Reading CSV complete")
 
 	parseCSV(records, c2)
+	fmt.Println("Parsing CSV complete")
 	processSim(c2, sim)
+	fmt.Println("Processing C2 complete")
 
 	io.Mat64toCSV(RESULTDIR+"/sim.csv", sim)
 
