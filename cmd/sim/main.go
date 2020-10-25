@@ -105,6 +105,8 @@ func processLine(c2 *mat64.Dense, sim *mat64.Dense, order <-chan int, wg *sync.W
 				sim.Set(i, index, accProd)
 			}
 
+			fmt.Printf("Processed: Line %d\n", index)
+
 			wg.Done()
 		} else {
 			break
