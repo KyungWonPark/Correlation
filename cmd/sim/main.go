@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/KyungWonPark/Correlation/internal/io"
@@ -53,7 +54,8 @@ func parseLine(records [][]string, c2 *mat64.Dense, order <-chan int, wg *sync.W
 		index, ok := <-order
 		if ok {
 			for i := 0; i < 13362; i++ {
-				value, err := strconv.ParseFloat(records[index][i], 64)
+				str := strings.TrimSpace(records[index][i])
+				value, err := strconv.ParseFloat(str, 64)
 				if err != nil {
 					log.Fatalf("Failed to parse: %v\n", err)
 				}
