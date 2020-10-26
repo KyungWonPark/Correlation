@@ -18,7 +18,7 @@ import (
 func main() { // thrStart thrEnd thrItv isDebugMode
 	// blas64.Use(blas_netlib.Implementation{})
 	var isDebugMode bool
-	flagDebug := os.Args[4]
+	flagDebug := os.Args[1]
 	if flagDebug == "on" {
 		isDebugMode = true
 	} else {
