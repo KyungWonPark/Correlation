@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"os/exec"
-	"strconv"
 
 	"github.com/KyungWonPark/Correlation/internal/calc"
 	"github.com/KyungWonPark/Correlation/internal/io"
@@ -17,9 +17,6 @@ import (
 
 func main() { // thrStart thrEnd thrItv isDebugMode
 	// blas64.Use(blas_netlib.Implementation{})
-	thrStart, _ := strconv.ParseFloat(os.Args[1], 64)
-	thrEnd, _ := strconv.ParseFloat(os.Args[2], 64)
-	thrItv, _ := strconv.ParseFloat(os.Args[3], 64)
 	var isDebugMode bool
 	flagDebug := os.Args[4]
 	if flagDebug == "on" {
@@ -108,69 +105,72 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 	arrEigVec := make([]float64, 13362*13362)
 	eigVec := mat64.NewDense(13362, 13362, arrEigVec)
 
-	var thr float64
-	for thr = thrStart; thr < thrEnd; thr += thrItv {
-		fmt.Printf("Processing: thr - %f\n", thr)
-		pl.Threshold(avgedMat, thredMat, thr, 0)
-		pl.Laplacian(thredMat) // Now thredMat is a Laplacian matrix
+	pl.Threshold(avgedMat, thredMat, 0.87, 0.000001) // last 0 is substitute value if c_ij < thr
+	for i := 0; i < 13362; i++ {
+		for j := 0; j < 13362; j++ {
+			if math.Abs(thredMat.At(i, j)) > 0.5 {
+				thredMat.Set(i, j, 1.0)
+			}
+		}
+	}
+	pl.Laplacian(thredMat) // Now thredMat is a Laplacian matrix
 
-		// Check Symmetry
-		if isDebugMode {
-			for i := 0; i < 13362; i++ {
-				for j := 0; j < 13362; j++ {
-					if thredMat.At(i, j) != thredMat.At(j, i) {
-						fmt.Printf("Warning mat[%d][%d]: %f | mat[%d][%d]: %f\n", i, j, thredMat.At(i, j), j, i, thredMat.At(j, i))
-					}
+	// Check Symmetry
+	if isDebugMode {
+		for i := 0; i < 13362; i++ {
+			for j := 0; j < 13362; j++ {
+				if thredMat.At(i, j) != thredMat.At(j, i) {
+					fmt.Printf("Warning mat[%d][%d]: %f | mat[%d][%d]: %f\n", i, j, thredMat.At(i, j), j, i, thredMat.At(j, i))
 				}
 			}
 		}
-
-		mat64tocArr(thredMat, pMatBuffer) // Copy thresholded matrix to MAGMA matrix buffer
-
-		fmt.Printf("Diagonalizing...")
-		// Call MAGMA
-		cmd := exec.Command("files/magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
-		err := cmd.Run()
-		if err != nil {
-			log.Fatalf("MAGMA execution has failed: %s\n", err)
-		}
-
-		// Copy result from MAGMA to eigVal and eigVec
-		cArrtomat64(eigVal, pEigVal)
-		cArrtomat64(eigVec, pMatBuffer) // eigVec rows are eigen vectors; eigVec[0] <- first eigen vector
-
-		if isDebugMode {
-			fmt.Printf("Threshold: %f Checking results...\n", thr)
-
-			eigValMat := mat64.NewDense(13362, 13362, nil)
-			for i := 0; i < 13362; i++ {
-				eigValMat.Set(i, i, eigVal.At(i, 0))
-			}
-
-			// U^T * A
-			result0 := mat64.NewDense(13362, 13362, nil)
-			result0.Mul(eigVec, thredMat)
-
-			// S * U^T
-			result1 := mat64.NewDense(13362, 13362, nil)
-			result1.Mul(eigValMat, eigVec)
-
-			isSame := mat64.EqualApprox(result0, result1, 0.000001)
-			if !isSame {
-				fmt.Printf("Thr: %f / Eigen decomposition has failed!\n", thr)
-				diff := mat64.NewDense(13362, 13362, nil)
-				diff.Sub(result0, result1)
-				fmt.Printf("Max(| U^T * A - S * U^T |) : %g\n", mat64.Max(diff))
-			}
-		}
-
-		fmt.Println("Writing Eigen value")
-		io.Mat64toCSV(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
-		fmt.Println("Writing Eigen vector")
-		io.Mat64toCSV(RESULTDIR+"/eigen-vector-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
-
-		fmt.Println("---- ---- ---- ---- ---- ---- ---- ----")
 	}
+
+	mat64tocArr(thredMat, pMatBuffer) // Copy thresholded matrix to MAGMA matrix buffer
+
+	fmt.Printf("Diagonalizing...")
+	// Call MAGMA
+	cmd := exec.Command("files/magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
+	err = cmd.Run()
+	if err != nil {
+		log.Fatalf("MAGMA execution has failed: %s\n", err)
+	}
+
+	// Copy result from MAGMA to eigVal and eigVec
+	cArrtomat64(eigVal, pEigVal)
+	cArrtomat64(eigVec, pMatBuffer) // eigVec rows are eigen vectors; eigVec[0] <- first eigen vector
+
+	if isDebugMode {
+		fmt.Printf("Threshold: %f Checking results...\n", 0.87)
+
+		eigValMat := mat64.NewDense(13362, 13362, nil)
+		for i := 0; i < 13362; i++ {
+			eigValMat.Set(i, i, eigVal.At(i, 0))
+		}
+
+		// U^T * A
+		result0 := mat64.NewDense(13362, 13362, nil)
+		result0.Mul(eigVec, thredMat)
+
+		// S * U^T
+		result1 := mat64.NewDense(13362, 13362, nil)
+		result1.Mul(eigValMat, eigVec)
+
+		isSame := mat64.EqualApprox(result0, result1, 0.000001)
+		if !isSame {
+			fmt.Printf("Thr: %f / Eigen decomposition has failed!\n", 0.87)
+			diff := mat64.NewDense(13362, 13362, nil)
+			diff.Sub(result0, result1)
+			fmt.Printf("Max(| U^T * A - S * U^T |) : %g\n", mat64.Max(diff))
+		}
+	}
+
+	fmt.Println("Writing Eigen value")
+	io.Mat64toCSV(RESULTDIR+"/eigen-value-bin-epsilon-thr-"+fmt.Sprintf("%f", 0.87)+".csv", eigVal)
+	fmt.Println("Writing Eigen vector")
+	io.Mat64toCSV(RESULTDIR+"/eigen-vector-bin-epsilon-thr-"+fmt.Sprintf("%f", 0.87)+".csv", eigVec)
+
+	fmt.Println("---- ---- ---- ---- ---- ---- ---- ----")
 
 	matBufferShm.Detach(pMatBuffer)
 	matBufferShm.Destroy()

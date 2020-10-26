@@ -7,7 +7,7 @@ import (
 	"github.com/gonum/matrix/mat64"
 )
 
-func threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr float64, order <-chan int, wg *sync.WaitGroup) {
+func threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr float64, sub float64, order <-chan int, wg *sync.WaitGroup) {
 	_, inputCols := inputMat.Dims()
 
 	for {
@@ -16,7 +16,7 @@ func threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr float64, order
 			for t := 0; t < inputCols; t++ {
 				value := inputMat.At(index, t)
 				if thr >= value {
-					value = 0.0
+					value = sub
 				}
 
 				outputMat.Set(index, t, value)
@@ -32,7 +32,7 @@ func threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr float64, order
 }
 
 // Threshold does thresholding
-func (p *PipeLine) Threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr float64) {
+func (p *PipeLine) Threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr float64, sub float64) {
 	inputRows, inputCols := inputMat.Dims()
 	outputRows, outputCols := outputMat.Dims()
 
@@ -46,7 +46,7 @@ func (p *PipeLine) Threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr 
 	wg.Add(inputRows)
 
 	for i := 0; i < p.numPoper; i++ {
-		go threshold(inputMat, outputMat, thr, order, &wg)
+		go threshold(inputMat, outputMat, thr, sub, order, &wg)
 	}
 
 	for i := 0; i < inputRows; i++ {
