@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"runtime"
 	"strconv"
@@ -59,6 +60,11 @@ func parseLine(records [][]string, c2 *mat64.Dense, order <-chan int, wg *sync.W
 				if err != nil {
 					log.Fatalf("Failed to parse: %v\n", err)
 				}
+
+				if math.Abs(value) > 1 {
+					log.Fatalf("Error: value is: %f, larger than 1!\n", value)
+				}
+
 				c2.Set(index, i, value)
 			}
 
@@ -97,9 +103,9 @@ func processLine(c2 *mat64.Dense, sim *mat64.Dense, order <-chan int, wg *sync.W
 	for {
 		index, ok := <-order
 		if ok {
-			for i := 0; i < (index + 1); i++ {
+			for i := 0; i < (index + 1); i++ { // for all cols j
 				var accProd float64
-				for t := 0; t < 13362; t++ {
+				for t := 0; t < 13362; t++ { // dotProd(i, j)
 					accProd = accProd + (c2.At(index, t) * c2.At(i, t))
 				}
 
