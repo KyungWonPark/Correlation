@@ -177,15 +177,10 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 }
 
 func getOnly1k(thredMat *mat64.Dense, testMat *mat64.Dense) {
-	inputRows, inputCols := thredMat.Dims()
-	outputRows, outputCols := testMat.Dims()
+	rows, cols := testMat.Dims()
 
-	if (inputRows > outputRows) || (inputCols > outputCols) {
-		log.Fatalf("[getOnly1k] Input matrix is smaller!")
-	}
-
-	for i := 0; i < outputRows; i++ {
-		for j := 0; j < outputCols; j++ {
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
 			testMat.Set(i, j, thredMat.At(i, j))
 		}
 	}
