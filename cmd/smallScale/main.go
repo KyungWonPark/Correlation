@@ -38,7 +38,7 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 		ringBuffer[i] = mat64.NewDense(13362, 600, nil)
 	}
 
-	pl := calc.Init(numQueueSize, isDebugMode)
+	pl := calc.Init(numQueueSize, false)
 
 	go func() {
 		for _, file := range fileList {
@@ -180,7 +180,7 @@ func getOnly1k(thredMat *mat64.Dense, testMat *mat64.Dense) {
 	inputRows, inputCols := thredMat.Dims()
 	outputRows, outputCols := testMat.Dims()
 
-	if inputRows > outputCols || inputCols > outputCols {
+	if (inputRows > outputRows) || (inputCols > outputCols) {
 		log.Fatalf("[getOnly1k] Input matrix is smaller!")
 	}
 
