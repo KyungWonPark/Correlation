@@ -144,9 +144,9 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 	}
 
 	fmt.Println("Writing Eigen value")
-	io.Mat64toCSV(RESULTDIR+"/eigen-value-bin-thr-"+fmt.Sprintf("%f", 0.87)+".csv", eigVal)
+	io.Mat64toCSV(RESULTDIR+"/eigen-value-bin-test.csv", eigVal)
 	fmt.Println("Writing Eigen vector")
-	io.Mat64toCSV(RESULTDIR+"/eigen-vector-bin-thr-"+fmt.Sprintf("%f", 0.87)+".csv", eigVec)
+	io.Mat64toCSV(RESULTDIR+"/eigen-vector-bin-test.csv", eigVec)
 
 	fmt.Println("---- ---- ---- ---- ---- ---- ---- ----")
 
