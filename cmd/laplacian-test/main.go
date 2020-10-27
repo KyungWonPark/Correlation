@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"os/exec"
 
@@ -24,9 +25,10 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 		isDebugMode = false
 	}
 
+	DATADIR := os.Getenv("DATA")
 	RESULTDIR := os.Getenv("RESULT")
 
-	numQueueSize := 4
+	numQueueSize := 8
 	ringBuffer := make([]*mat64.Dense, numQueueSize)
 	for i := 0; i < numQueueSize; i++ {
 		ringBuffer[i] = mat64.NewDense(13362, 600, nil)
@@ -34,29 +36,47 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 
 	pl := calc.Init(numQueueSize, isDebugMode)
 
-	dest := pl.Malloc()
+	go func() {
+		for _, file := range fileList {
+			dest := pl.Malloc()
+			doSampling(DATADIR+"/fMRI-Smoothed/"+file, ringBuffer[dest], pl.GetNP())
+			pl.Push(dest)
+		}
 
-	for i := 0; i < 13362; i++ {
-		for j := 0; j < 13362; j++ {
-			if j == (i + 1) {
-				ringBuffer[dest].Set(i, j, 1.0)
-				ringBuffer[dest].Set(j, i, 1.0)
-			} else {
-				ringBuffer[dest].Set(i, j, 0.0)
+		pl.Close()
+		pl.StopScheduler()
+
+		return
+	}()
+
+	avgedMat := mat64.NewDense(13362, 13362, nil)
+
+	{
+		accedMat := mat64.NewDense(13362, 13362, nil)
+		{
+			temp0 := mat64.NewDense(13362, 600, nil)
+			temp1 := mat64.NewDense(13362, 600, nil)
+			temp2 := mat64.NewDense(13362, 13362, nil)
+
+			for {
+				job, ok := pl.Pop()
+				if ok {
+					pl.ZScoring(ringBuffer[job], temp0)
+					pl.Sigmoid(temp0, temp1)
+					pl.Pearson(temp1, temp2)
+					pl.Acc(temp2, accedMat)
+
+					pl.Free(job)
+				} else {
+					break
+				}
 			}
 		}
+		pl.Avg(accedMat, avgedMat, float64(len(fileList)))
 	}
 
-	ringBuffer[dest].Set(6681, 6682, 0.0)
-	ringBuffer[dest].Set(6682, 6681, 0.0)
-
-	pl.Push(dest)
-
-	pl.Close()
-	pl.StopScheduler()
-
 	fmt.Println("Writing C2-tilda")
-	io.Mat64toCSV(RESULTDIR+"/bin-test.csv", ringBuffer[dest])
+	io.Mat64toCSV(RESULTDIR+"/c2-tilda.csv", avgedMat)
 
 	matBufferShm, err := shm.Create(13362 * 13362 * 8)
 	if err != nil {
@@ -85,12 +105,14 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 	arrEigVec := make([]float64, 13362*13362)
 	eigVec := mat64.NewDense(13362, 13362, arrEigVec)
 
+	pl.Threshold(avgedMat, thredMat, 0.87, 0.000001) // last 0 is substitute value if c_ij < thr
 	for i := 0; i < 13362; i++ {
 		for j := 0; j < 13362; j++ {
-			thredMat.Set(i, j, ringBuffer[dest].At(i, j))
+			if math.Abs(thredMat.At(i, j)) > 0.5 {
+				thredMat.Set(i, j, 1.0)
+			}
 		}
 	}
-
 	pl.Laplacian(thredMat) // Now thredMat is a Laplacian matrix
 
 	// Check Symmetry
@@ -144,9 +166,9 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 	}
 
 	fmt.Println("Writing Eigen value")
-	io.Mat64toCSV(RESULTDIR+"/eigen-value-bin-thr-"+fmt.Sprintf("%f", 0.87)+".csv", eigVal)
+	io.Mat64toCSV(RESULTDIR+"/eigen-value-bin-epsilon-thr-"+fmt.Sprintf("%f", 0.87)+".csv", eigVal)
 	fmt.Println("Writing Eigen vector")
-	io.Mat64toCSV(RESULTDIR+"/eigen-vector-bin-thr-"+fmt.Sprintf("%f", 0.87)+".csv", eigVec)
+	io.Mat64toCSV(RESULTDIR+"/eigen-vector-bin-epsilon-thr-"+fmt.Sprintf("%f", 0.87)+".csv", eigVec)
 
 	fmt.Println("---- ---- ---- ---- ---- ---- ---- ----")
 
