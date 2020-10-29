@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -80,3 +84,7 @@ int eigenDecomposition(int jobSize, double *pMatBuffer, double *pEigVal) {
 	TESTING_CHECK( magma_finalize() );
 	return 0;
 }
+
+#ifdef __cplusplus
+}
+#endif
