@@ -1,14 +1,8 @@
 package laplacian
 
-// #cgo CFLAGS: -I./files/include -I./files/testing -I./files
+// #cgo CFLAGS: -I./files/include -I./files/testing -I.
 // #cgo LDFLAGS: -L./files -llaplacian
 // #include <laplacian.h>
-
-// #include <stdio.h>
-// void hello() {
-// 	printf("Hello, World!\n");
-//	return;
-//	}
 import "C"
 import (
 	"unsafe"
