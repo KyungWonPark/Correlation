@@ -4,6 +4,11 @@ package laplacian
 // #cgo LDFLAGS: -L./files -llaplacian
 // #include <laplacian.h>
 
+// #include <stdio.h>
+// void hello() {
+// 	printf("Hello, World!\n");
+//	return;
+//	}
 import "C"
 import (
 	"unsafe"
@@ -22,7 +27,7 @@ func EigenDecomp(matrix *mat64.Dense) (*mat64.Dense, *mat64.Dense) {
 	pMatBuffer := unsafe.Pointer(&arrMatBuffer[0])
 	pEigVal := unsafe.Pointer(&arrEigVal[0])
 
-	C.eigenDecomposition(rows, pMatBuffer, pEigVal)
+	C.eigen(rows, pMatBuffer, pEigVal)
 
 	return eigVal, matBuffer
 }
