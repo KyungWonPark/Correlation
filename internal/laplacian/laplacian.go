@@ -1,7 +1,7 @@
 package laplacian
 
 // #cgo CFLAGS: -I./include -I./testing -I.
-// #cgo LDFLAGS: -L. -llaplacian
+// #cgo LDFLAGS: -L/home/iksoochang2/kw-park/.root/usr/local/magma/lib -L. -lmagma -llaplacian
 // #include <laplacian.h>
 import "C"
 import (
