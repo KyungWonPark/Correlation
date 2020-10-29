@@ -57,19 +57,19 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 	arrEigVec := make([]float64, 13362*13362)
 	eigVec := mat64.NewDense(13362, 13362, arrEigVec)
 
-	fmt.Printf("Thresholding with thr: 0.87 / gamma: 0.001")
+	fmt.Println("Thresholding with thr: 0.87 / gamma: 0.001")
 	pl.Threshold(c2, thredMat, 0.87, 0.001)
-	fmt.Printf("Constructing a Laplacian matrix")
+	fmt.Println("Constructing a Laplacian matrix")
 	pl.Laplacian(thredMat) // Now thredMat is a Laplacian matrix
-	fmt.Printf("Checking constructed Laplacian matrix")
+	fmt.Println("Checking constructed Laplacian matrix")
 	isLaplacian := calc.CheckLaplacian(thredMat, 0.00000001)
 	if !isLaplacian {
-		log.Fatalf("Failed to pass laplacian check!")
+		log.Fatalf("Failed to pass laplacian check!\n")
 	}
-	fmt.Printf("Copying constructed Laplacian matrix to MAGMA memory")
+	fmt.Println("Copying constructed Laplacian matrix to MAGMA memory")
 	mat64tocArr(thredMat, pMatBuffer) // Copy thresholded matrix to MAGMA matrix buffer
 
-	fmt.Printf("Diagonalizing...")
+	fmt.Println("Diagonalizing...")
 	cmd := exec.Command("files/magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
 	txt, err := cmd.Output()
 	if err != nil {
@@ -77,11 +77,11 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 	}
 
 	// Copy result from MAGMA to eigVal and eigVec
-	fmt.Printf("Copying results back from MAGMA memory")
+	fmt.Println("Copying results back from MAGMA memory")
 	cArrtomat64(eigVal, pEigVal)
 	cArrtomat64(eigVec, pMatBuffer) // eigVec rows are eigen vectors; eigVec[0] <- first eigen vector
 
-	fmt.Printf("Checking eigen-decomposition quality")
+	fmt.Println("Checking eigen-decomposition quality")
 	isEigenOK := calc.CheckEigenQuality(thredMat, eigVal, eigVec, 0.00000001)
 	if !isEigenOK {
 		log.Fatalf("Failed to pass eigen decomposition quality check!")
