@@ -93,7 +93,7 @@ func sampling(img *nifti.Nifti1Image, order <-chan int, wg *sync.WaitGroup, time
 		if ok {
 			for i, vox := range greyVoxels {
 				seed := Voxel{2 * vox.x, 2 * vox.y, 1 + 2*vox.z}
-				timeSeries.Set(i, timePoint-301, convolution(img, timePoint, seed))
+				timeSeries.Set(i, timePoint-300, convolution(img, timePoint, seed))
 			}
 			wg.Done()
 		} else {
@@ -116,7 +116,7 @@ func doSampling(path string, timeSeries *mat64.Dense, numLoader int) {
 		go sampling(&img, order, &wg, timeSeries)
 	}
 
-	for timePoint := 301; timePoint < 901; timePoint++ {
+	for timePoint := 300; timePoint < 900; timePoint++ {
 		order <- timePoint
 	}
 	wg.Wait()

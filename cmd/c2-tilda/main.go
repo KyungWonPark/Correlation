@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/KyungWonPark/Correlation/internal/calc"
@@ -12,6 +11,7 @@ import (
 func main() { // thrStart thrEnd thrItv isDebugMode
 	DATADIR := os.Getenv("DATA")
 	RESULTDIR := os.Getenv("RESULT")
+	RESULTDIR = RESULTDIR + "/dump"
 
 	numQueueSize := 8
 	ringBuffer := make([]*mat64.Dense, numQueueSize)
@@ -34,10 +34,7 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 		return
 	}()
 
-	avgedMat := mat64.NewDense(13362, 13362, nil)
-
 	{
-		accedMat := mat64.NewDense(13362, 13362, nil)
 		{
 			temp0 := mat64.NewDense(13362, 600, nil)
 			temp1 := mat64.NewDense(13362, 600, nil)
@@ -46,10 +43,13 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 			for {
 				job, ok := pl.Pop()
 				if ok {
+					io.Mat64toCSV(RESULTDIR+"/100610-sampled.csv", ringBuffer[job])
 					pl.ZScoring(ringBuffer[job], temp0)
+					io.Mat64toCSV(RESULTDIR+"/100610-zscored.csv", temp0)
 					pl.Sigmoid(temp0, temp1)
+					io.Mat64toCSV(RESULTDIR+"/100610-sigmoided.csv", temp1)
 					pl.Pearson(temp1, temp2)
-					pl.Acc(temp2, accedMat)
+					io.Mat64toCSV(RESULTDIR+"/100610-pearsoned.csv", temp2)
 
 					pl.Free(job)
 				} else {
@@ -57,11 +57,7 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 				}
 			}
 		}
-		pl.Avg(accedMat, avgedMat, float64(len(fileList)))
 	}
-
-	fmt.Println("Writing C2-tilda")
-	io.Mat64toCSV(RESULTDIR+"/c2-tilda.csv", avgedMat)
 
 	return
 }
