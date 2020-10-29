@@ -1,8 +1,9 @@
 package laplacian
 
-// #cgo CFLAGS: -I$MAGMADIR/include -I./files/include -I./files/testing -I./files
-// #cgo LDFLAGS: -L$MAGMADIR/lib -L./files -lmagma -llaplacian
+// #cgo CFLAGS: -I./files/include -I./files/testing -I./files
+// #cgo LDFLAGS: -L./files -lmagma -llaplacian
 // #include <laplacian.h>
+
 import "C"
 import (
 	"unsafe"

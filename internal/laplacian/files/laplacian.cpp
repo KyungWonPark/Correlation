@@ -1,7 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +6,10 @@ extern "C" {
 #include "include/magma_v2.h"
 #include "include/magma_lapack.h"
 #include "include/magma_operators.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Macros
 #define TESTING_CHECK( err ) 												 \
