@@ -1,7 +1,7 @@
 package laplacian
 
 // #cgo CFLAGS: -I./files/include -I./files/testing -I./files
-// #cgo LDFLAGS: -L./files -lmagma -llaplacian
+// #cgo LDFLAGS: -L./files -llaplacian
 // #include <laplacian.h>
 
 import "C"
