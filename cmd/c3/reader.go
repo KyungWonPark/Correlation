@@ -92,7 +92,7 @@ func sampling(img *nifti.Nifti1Image, order <-chan int, wg *sync.WaitGroup, time
 		timePoint, ok := <-order
 		if ok {
 			for i, vox := range greyVoxels {
-				seed := Voxel{1 + 2*vox.x, 1 + 2*vox.y, 2 + 2*vox.z}
+				seed := Voxel{2 * vox.x, 2 * vox.y, 1 + 2*vox.z}
 				timeSeries.Set(i, timePoint-300, convolution(img, timePoint, seed))
 			}
 			wg.Done()
