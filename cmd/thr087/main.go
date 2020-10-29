@@ -26,9 +26,6 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 
 	pl := calc.Init(numQueueSize, false)
 
-	pl.Close()
-	pl.StopScheduler()
-
 	fmt.Println("Loading C2-tilda")
 	c2 := mat64.NewDense(13362, 13362, nil)
 	io.CSVtoMat64(RESULTDIR+"/c2-tilda.csv", c2)

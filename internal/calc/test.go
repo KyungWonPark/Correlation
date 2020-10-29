@@ -166,7 +166,7 @@ func CheckEigenQuality(org *mat64.Dense, eigVal *mat64.Dense, eigVec *mat64.Dens
 
 			av.Mul(org, v)
 			for j := 0; j < cols; j++ {
-				val := eigVal.At(i, 0) * v.At(i, j)
+				val := eigVal.At(i, 0) * v.At(j, 0)
 				lv.Set(j, 0, val)
 			}
 
