@@ -2,6 +2,7 @@ package calc
 
 import (
 	"log"
+	"math"
 	"sync"
 
 	"github.com/gonum/matrix/mat64"
@@ -9,7 +10,7 @@ import (
 
 func threshold(inputMat *mat64.Dense, outputMat *mat64.Dense, thr float64, sub float64, order <-chan int, wg *sync.WaitGroup) {
 	_, inputCols := inputMat.Dims()
-
+	sub = math.Abs(sub)
 	for {
 		index, ok := <-order
 		if ok {

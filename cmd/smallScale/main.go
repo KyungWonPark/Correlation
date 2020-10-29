@@ -125,6 +125,8 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 		fmt.Printf("Diagonalizing...")
 		// Call MAGMA
 		cmd := exec.Command("files/magma", "1000", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
+
+		fmt.Println(cmd.Output())
 		err := cmd.Run()
 		if err != nil {
 			log.Fatalf("MAGMA execution has failed: %s\n", err)
