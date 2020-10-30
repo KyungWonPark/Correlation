@@ -13,7 +13,7 @@ func main() { // thrStart thrEnd thrItv isDebugMode
 	RESULTDIR := os.Getenv("RESULT")
 	RESULTDIR = RESULTDIR + "/check"
 
-	timeSeries := doSampling(DATADIR + "/100610_rfMRI_REST1_LR-smoothed.nii")
+	timeSeries := doSampling(DATADIR + "/fMRI-Smoothed/100610_rfMRI_REST1_LR-smoothed.nii")
 	write(RESULTDIR+"/100610_CoarseGrained.txt", timeSeries)
 
 	return
