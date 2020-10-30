@@ -31,9 +31,9 @@ var greyVoxels [13362]Voxel
 
 func init() {
 	// Sampling setting
-	for z := 0; z < 2; z++ {
-		for y := 0; y < 2; y++ {
-			for x := 0; x < 2; x++ {
+	for z := 0; z < 3; z++ {
+		for y := 0; y < 3; y++ {
+			for x := 0; x < 3; x++ {
 				taxiDist := math.Abs(float64(x-1)) + math.Abs(float64(y-1)) + math.Abs(float64(z-1))
 				convKernel[z][y][x] = math.Pow(2, -1*taxiDist)
 			}
