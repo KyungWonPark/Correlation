@@ -34,18 +34,19 @@ func readCsvFile(filePath string) [][]string {
 func main() {
 	RESULTDIR := os.Getenv("RESULT")
 
-	c2 := mat64.NewDense(13362, 13362, nil)
-	sim := mat64.NewDense(13362, 13362, nil)
-
-	records := readCsvFile(RESULTDIR + "/c2-tilda.csv")
+	c2 := io.NpytoMat64(RESULTDIR + "/gamma-0.000/c2-tilda.npy")
 	fmt.Println("Reading CSV complete")
 
-	parseCSV(records, c2)
-	fmt.Println("Parsing CSV complete")
+	fmt.Printf("c2[0][0]: %f\n", c2.At(0, 0))
+	fmt.Printf("c2[1][1]: %f\n", c2.At(1, 1))
+	fmt.Printf("c2[2][2]: %f\n", c2.At(2, 2))
+
+	sim := mat64.NewDense(13362, 13362, nil)
+
 	processSim(c2, sim)
 	fmt.Println("Processing C2 complete")
 
-	io.Mat64toCSV(RESULTDIR+"/sim.csv", sim)
+	io.Mat64toNpy(RESULTDIR+"/sim.npy", sim)
 
 	return
 }
