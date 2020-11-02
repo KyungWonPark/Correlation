@@ -41,7 +41,7 @@ func main() {
 		fmt.Printf("Index: %d, Gamma: 0.001, Threshold: %s\n", n, thrs[n])
 		fmt.Printf("Reading: eigVal-thr-" + thrs[n] + "-gamma-0.001000.npy")
 
-		eigVal := io.NpytoMat64("~/Result/gamma-0.001/eigVal-thr-" + thrs[n] + "-gamma-0.001000.npy")
+		eigVal := io.NpytoMat64("/home/iksoochang2/kw-park/Result/gamma-0.001/eigVal-thr-" + thrs[n] + "-gamma-0.001000.npy")
 		m := cluster.GetMultiplicity(eigVal, 0.001)
 		fmt.Printf("Multiplicity: %d\n", m)
 
