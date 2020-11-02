@@ -7,7 +7,7 @@ import (
 	"github.com/gonum/matrix/mat64"
 )
 
-// GetMultiplicity returns multiplicity of eigenvalue
+// GetMultiplicity returns multiplicity of eigenvalue - Checked: Working
 func GetMultiplicity(eigVal *mat64.Dense, gamma float64) int {
 	multiplicity := -1
 	n, _ := eigVal.Dims()
@@ -155,4 +155,20 @@ func GetEssentialClusters(clusters []Cluster) []Cluster {
 	})
 
 	return essClusters
+}
+
+// GammaClustering returns cluster configuration, which returns only conf that has (M - 1) clusters, returns an empty slice otherwise
+func GammaClustering(eigVal *mat64.Dense, eigVec *mat64.Dense, gamma float64) []Cluster {
+	var answer []Cluster
+
+	M := GetMultiplicity(eigVal, gamma)
+	for i := 1; i < M; i++ {
+		cls := GetClsFromOneEigVec(eigVec, i)
+		if len(cls) == (M - 1) {
+			answer = cls
+			break
+		}
+	}
+
+	return answer
 }
