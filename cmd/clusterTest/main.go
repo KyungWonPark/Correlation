@@ -38,7 +38,7 @@ func main() {
 		}
 		fmt.Printf("---- ---- ---- ---- ---- ---- ---- ----\n")
 
-		eigVal := io.NpytoMat64("/home/iksoochang2/kw-park/Result/gamma-0.001/eigVal-thr-" + thrs[n] + "-gamma-0.001000.npy")
+		eigVal := io.NpytoMat64("/home/iksoochang2/kw-park/Result/gamma-0.000/eigVal-thr-" + thrs[n] + "-gamma-0.000000.npy")
 		m := cluster.GetMultiplicity(eigVal, 0.001)
 		fmt.Printf("Index: %d | Multiplicity: %d\n", n, m)
 
