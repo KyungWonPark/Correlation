@@ -28,7 +28,7 @@ func main() { // thrStart thrEnd thrItv
 
 	DATADIR := os.Getenv("DATA")
 	RESULTDIR := os.Getenv("RESULT")
-	RESULTDIR = RESULTDIR + "/gamma-0.000"
+	RESULTDIR = RESULTDIR + "/Temp/gamma-0.000"
 
 	numQueueSize := 8
 	ringBuffer := make([]*mat64.Dense, numQueueSize)
@@ -79,7 +79,7 @@ func main() { // thrStart thrEnd thrItv
 
 	fmt.Println("Writing C2-tilda")
 	// io.Mat64toCSV(RESULTDIR+"/c2-tilda.csv", avgedMat)
-	io.Mat64toNpy(RESULTDIR+"/c2-tilda.csv", avgedMat)
+	// io.Mat64toNpy(RESULTDIR+"/c2-tilda.csv", avgedMat)
 
 	matBufferShm, err := shm.Create(13362 * 13362 * 8)
 	if err != nil {
@@ -114,6 +114,8 @@ func main() { // thrStart thrEnd thrItv
 		pl.Threshold(avgedMat, thredMat, thr, gamma)
 		pl.Laplacian(thredMat) // Now thredMat is a Laplacian matrix
 
+		io.Mat64toNpy(RESULTDIR+"/laplacian-thr-"+fmt.Sprintf("%f", thr)+"-gamma-0.000.npy", thredMat)
+
 		mat64tocArr(thredMat, pMatBuffer) // Copy thresholded matrix to MAGMA matrix buffer
 
 		fmt.Printf("Diagonalizing...")
@@ -130,11 +132,11 @@ func main() { // thrStart thrEnd thrItv
 
 		fmt.Println("Writing Eigen value")
 		// io.Mat64toCSV(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
-		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".csv", eigVal)
-		io.Mat64toNpy(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".npy", eigVal)
+		// io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".csv", eigVal)
+		// io.Mat64toNpy(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".npy", eigVal)
 		fmt.Println("Writing Eigen vector")
 		// io.Mat64toCSV(RESULTDIR+"/eigen-vector-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
-		io.Mat64toNpy(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".npy", eigVec)
+		// io.Mat64toNpy(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".npy", eigVec)
 
 		fmt.Println("---- ---- ---- ---- ---- ---- ---- ----")
 	}
