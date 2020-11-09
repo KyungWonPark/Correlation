@@ -46,7 +46,7 @@ func main() {
 	processSim(c2, sim)
 	fmt.Println("Processing C2 complete")
 
-	io.Mat64toNpy("c2-sim.npy", sim)
+	io.Mat64toNpy("sim-"+c2FileName, sim)
 
 	return
 }
