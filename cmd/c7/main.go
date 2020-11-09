@@ -34,7 +34,7 @@ func main() { // thrStart thrEnd thrItv timeStart timeEnd postFix
 	DATADIR := os.Getenv("DATA")
 	RESULTDIR := os.Getenv("RESULT")
 	// Output directory location
-	RESULTDIR = RESULTDIR + postFix
+	RESULTDIR = RESULTDIR + "/" + postFix
 
 	// Check if directory exists
 	if _, err := os.Stat(RESULTDIR); os.IsNotExist(err) {
@@ -91,7 +91,7 @@ func main() { // thrStart thrEnd thrItv timeStart timeEnd postFix
 
 	fmt.Println("Writing C2-tilda")
 	// io.Mat64toCSV(RESULTDIR+"/c2-tilda.csv", avgedMat)
-	io.Mat64toNpy(RESULTDIR+"/"+postFix+"-tilda.csv", avgedMat)
+	io.Mat64toNpy(RESULTDIR+"/"+postFix+"-tilda.npy", avgedMat)
 
 	matBufferShm, err := shm.Create(13362 * 13362 * 8)
 	if err != nil {

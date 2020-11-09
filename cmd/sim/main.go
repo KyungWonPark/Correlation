@@ -32,9 +32,9 @@ func readCsvFile(filePath string) [][]string {
 }
 
 func main() {
-	RESULTDIR := os.Getenv("RESULT")
+	c2FileName := os.Args[1]
 
-	c2 := io.NpytoMat64(RESULTDIR + "/gamma-0.000/c2-tilda.npy")
+	c2 := io.NpytoMat64(c2FileName)
 	fmt.Println("Reading CSV complete")
 
 	fmt.Printf("c2[0][0]: %f\n", c2.At(0, 0))
@@ -46,7 +46,7 @@ func main() {
 	processSim(c2, sim)
 	fmt.Println("Processing C2 complete")
 
-	io.Mat64toNpy(RESULTDIR+"/sim.npy", sim)
+	io.Mat64toNpy("c2-sim.npy", sim)
 
 	return
 }
