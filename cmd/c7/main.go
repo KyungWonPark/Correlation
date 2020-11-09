@@ -126,7 +126,7 @@ func main() { // thrStart thrEnd thrItv timeStart timeEnd postFix
 		pl.Threshold(avgedMat, thredMat, thr, gamma)
 		pl.Laplacian(thredMat) // Now thredMat is a Laplacian matrix
 
-		io.Mat64toNpy(RESULTDIR+"/laplacian-thr-"+fmt.Sprintf("%f", thr)+"-gamma-0.001.npy", thredMat)
+		// io.Mat64toNpy(RESULTDIR+"/laplacian-thr-"+fmt.Sprintf("%f", thr)+"-gamma-0.001.npy", thredMat)
 
 		mat64tocArr(thredMat, pMatBuffer) // Copy thresholded matrix to MAGMA matrix buffer
 
@@ -143,12 +143,11 @@ func main() { // thrStart thrEnd thrItv timeStart timeEnd postFix
 		cArrtomat64(eigVec, pMatBuffer) // eigVec rows are eigen vectors; eigVec[0] <- first eigen vector
 
 		fmt.Println("Writing Eigen value")
-		// io.Mat64toCSV(RESULTDIR+"/eigen-value-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVal)
-		//io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".csv", eigVal)
-		//io.Mat64toNpy(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".npy", eigVal)
+		io.Mat64toCSV(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".csv", eigVal)
+		io.Mat64toNpy(RESULTDIR+"/eigVal-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".npy", eigVal)
 		fmt.Println("Writing Eigen vector")
 		// io.Mat64toCSV(RESULTDIR+"/eigen-vector-thr-"+fmt.Sprintf("%f", thr)+".csv", eigVec)
-		//io.Mat64toNpy(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".npy", eigVec)
+		io.Mat64toNpy(RESULTDIR+"/eigVec-thr-"+fmt.Sprintf("%f", thr)+"-gamma-"+fmt.Sprintf("%f", gamma)+".npy", eigVec)
 
 		fmt.Println("---- ---- ---- ---- ---- ---- ---- ----")
 	}
