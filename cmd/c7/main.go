@@ -91,7 +91,7 @@ func main() { // thrStart thrEnd thrItv timeStart timeEnd postFix
 
 	fmt.Println("Writing C2-tilda")
 	// io.Mat64toCSV(RESULTDIR+"/c2-tilda.csv", avgedMat)
-	io.Mat64toNpy(RESULTDIR+"/c2-tilda.csv", avgedMat)
+	io.Mat64toNpy(RESULTDIR+"/"+postFix+"-tilda.csv", avgedMat)
 
 	matBufferShm, err := shm.Create(13362 * 13362 * 8)
 	if err != nil {
