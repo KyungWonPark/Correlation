@@ -89,9 +89,9 @@ func main() { // thrStart thrEnd thrItv timeStart timeEnd postFix
 		pl.Avg(accedMat, avgedMat, float64(len(fileList)))
 	}
 
-	fmt.Println("Writing C2-tilda")
+	fmt.Println("Writing C2")
 	// io.Mat64toCSV(RESULTDIR+"/c2-tilda.csv", avgedMat)
-	io.Mat64toNpy(RESULTDIR+"/"+postFix+"-tilda.npy", avgedMat)
+	io.Mat64toNpy(RESULTDIR+"/"+postFix+".npy", avgedMat)
 
 	matBufferShm, err := shm.Create(13362 * 13362 * 8)
 	if err != nil {
