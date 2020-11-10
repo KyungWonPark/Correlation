@@ -15,16 +15,15 @@ import (
 	// blas_netlib "gonum.org/v1/netlib/blas/netlib"
 )
 
-func main() { // thrStart thrEnd thrItv timeStart timeEnd postFix
+func main() { // thrStart thrEnd thrItv gamma timeStart timeEnd postFix
 	// blas64.Use(blas_netlib.Implementation{})
 	thrStart, _ := strconv.ParseFloat(os.Args[1], 64)
 	thrEnd, _ := strconv.ParseFloat(os.Args[2], 64)
 	thrItv, _ := strconv.ParseFloat(os.Args[3], 64)
-	var gamma float64
-	gamma = 0.001
-	timeStart, _ := strconv.Atoi(os.Args[4])
-	timeEnd, _ := strconv.Atoi(os.Args[5])
-	postFix := os.Args[6]
+	gamma, _ := strconv.ParseFloat(os.Args[4], 64)
+	timeStart, _ := strconv.Atoi(os.Args[5])
+	timeEnd, _ := strconv.Atoi(os.Args[6])
+	postFix := os.Args[7]
 
 	timePeriod := timeEnd - timeStart
 
