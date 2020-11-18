@@ -35,7 +35,7 @@ func main() {
 	c2FileName := os.Args[1]
 
 	c2 := io.NpytoMat64(c2FileName)
-	fmt.Println("Reading CSV complete")
+	fmt.Println("Reading c2-tilda.npy complete")
 
 	fmt.Printf("c2[0][0]: %f\n", c2.At(0, 0))
 	fmt.Printf("c2[1][1]: %f\n", c2.At(1, 1))
@@ -46,7 +46,7 @@ func main() {
 	processSim(c2, sim)
 	fmt.Println("Processing C2 complete")
 
-	io.Mat64toNpy("sim-"+c2FileName, sim)
+	io.Mat64toNpy("similarity-tilda.npy", sim)
 
 	return
 }
