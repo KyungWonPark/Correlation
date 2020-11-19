@@ -37,10 +37,10 @@ func main() { // fileName timeStart(300) timeEnd(900)
 
 	// io.Mat64toNpy(RESULTDIR+"/"+postFix+".npy", avgedMat)
 	fmt.Println("Writing Results...")
-	io.Mat64toNpy("./npy/cgGray.npy", cgGray)
-	io.Mat64toNpy("./npy/zscore.npy", zscore)
-	io.Mat64toNpy("./npy/spv.npy", spv)
-	io.Mat64toNpy("./npy/c2.npy", c2)
+	io.Mat64toNpy(".npy/cgGray.npy", cgGray)
+	io.Mat64toNpy(".npy/zscore.npy", zscore)
+	io.Mat64toNpy(".npy/spv.npy", spv)
+	io.Mat64toNpy(".npy/c2.npy", c2)
 
 	fmt.Println("Finished.")
 
