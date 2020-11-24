@@ -14,7 +14,7 @@ func main() { // subjectNum timeStart(300) timeEnd(900)
 	subjectNum := os.Args[1]
 	fmt.Printf("Processing: %s\n", subjectNum)
 	timeStartStr := os.Args[2]
-	timeEndStr := os.Args[2]
+	timeEndStr := os.Args[3]
 	timeStart, _ := strconv.Atoi(timeStartStr)
 	timeEnd, _ := strconv.Atoi(timeEndStr)
 	timePeriod := timeEnd - timeStart
