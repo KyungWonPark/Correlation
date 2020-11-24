@@ -31,7 +31,7 @@ func main() { // subjectNum timeStart(300) timeEnd(900)
 	spv := mat64.NewDense(13362, timePeriod, nil)
 	c2 := mat64.NewDense(13362, 13362, nil)
 
-	fileName := "input/" + subjectNum + "_rfMRI_REST1_LR-smoothed.nii"
+	fileName := "./input/" + subjectNum + "_rfMRI_REST1_LR-smoothed.nii"
 
 	fmt.Println("Calculating...")
 	doSampling(fileName, timeStart, timeEnd, cgGray, 28)
@@ -39,7 +39,7 @@ func main() { // subjectNum timeStart(300) timeEnd(900)
 	pl.Sigmoid(zscore, spv)
 	pl.Pearson(spv, c2)
 
-	outputDir := "ouptut/" + subjectNum + "/" + timeStartStr + "-" + timeEndStr + "/"
+	outputDir := "./ouptut/" + subjectNum + "/" + timeStartStr + "-" + timeEndStr + "/"
 
 	// io.Mat64toNpy(RESULTDIR+"/"+postFix+".npy", avgedMat)
 	fmt.Println("Writing Results...")
