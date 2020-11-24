@@ -39,7 +39,7 @@ func main() { // subjectNum timeStart(300) timeEnd(900)
 	pl.Sigmoid(zscore, spv)
 	pl.Pearson(spv, c2)
 
-	outputDir := "ouptut/" + subjectNum + "/" + timeStartStr + "-" + timeEndStr + "/"
+	outputDir := "output/" + subjectNum + "/" + timeStartStr + "-" + timeEndStr + "/"
 
 	// io.Mat64toNpy(RESULTDIR+"/"+postFix+".npy", avgedMat)
 	fmt.Println("Writing Results...")
