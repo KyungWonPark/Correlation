@@ -85,7 +85,7 @@ func main() { // SUBJ TIMESTART TIMEEND anti-parallel GAMMA
 		cmd := exec.Command("magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
 		err := cmd.Run()
 		if err != nil {
-			log.Fatalf("[main.go - line 89] MAGMA execution has failed: %s\n", err)
+			log.Fatalf("[main.go - line 88] MAGMA execution has failed: %s\n", err)
 		}
 
 		// Copy result from MAGMA to eigVal and eigVec
