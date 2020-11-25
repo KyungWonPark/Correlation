@@ -82,7 +82,7 @@ func main() { // SUBJ TIMESTART TIMEEND anti-parallel GAMMA
 
 		fmt.Printf("Diagonalizing...\n")
 		// Call MAGMA
-		cmd := exec.Command("./magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
+		cmd := exec.Command("magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
 		err := cmd.Run()
 		if err != nil {
 			log.Fatalf("[main.go - line 89] MAGMA execution has failed: %s\n", err)
