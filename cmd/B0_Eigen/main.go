@@ -83,6 +83,7 @@ func main() { // SUBJ TIMESTART TIMEEND anti-parallel GAMMA
 		fmt.Printf("Diagonalizing...\n")
 		// Call MAGMA
 		// Fuck. I haredcoded. Fucking bitch cunt IBM LSF
+
 		cmd := exec.Command("/home/iksoochang2/kw-park/.root/usr/local/bin/magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
 		err := cmd.Run()
 		if err != nil {
