@@ -80,13 +80,13 @@ func main() { // SUBJ TIMESTART TIMEEND anti-parallel GAMMA
 
 		mat64tocArr(thredMat, pMatBuffer) // Copy thresholded matrix to MAGMA matrix buffer
 
-		fmt.Printf("Diagonalizing...")
+		fmt.Printf("Diagonalizing...\n")
 		// Call MAGMA
 		cmd := exec.Command("./magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
 		magmaOutput, err := cmd.Output()
 		fmt.Printf("MAGMA Output: %s\n", magmaOutput)
 		if err != nil {
-			log.Fatalf("MAGMA execution has failed: %s\n", err)
+			log.Fatalf("[main.go - line 89] MAGMA execution has failed: %s\n", err)
 		}
 
 		// Copy result from MAGMA to eigVal and eigVec
