@@ -48,6 +48,10 @@ func main() { // thrStart thrEnd thrItv gamma timeStart timeEnd postFix
 
 	pl := calc.Init(4, false)
 	pl.Laplacian(c2) // Now c2 is a Laplacian matrix
+	isOk := checkLaplacian(c2)
+	if !isOk {
+		log.Fatalf("Laplacian is wrong!\n")
+	}
 
 	mat64tocArr(c2, pMatBuffer) // Copy thresholded matrix to MAGMA matrix buffer
 
