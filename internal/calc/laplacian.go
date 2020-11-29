@@ -2,6 +2,7 @@ package calc
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"sync"
 
@@ -33,6 +34,7 @@ func laplacian(inputMat *mat64.Dense, order <-chan int, wg *sync.WaitGroup) {
 
 			if math.Abs(sum) > 0.0000001 {
 				fmt.Printf("[Laplacian] Sum of row in L isn't 0 but %f\n", sum)
+				log.Fatalf("[Laplacian] Sum of row in L isn't 0 but %f\n", sum)
 			}
 
 			wg.Done()
