@@ -14,8 +14,9 @@ func main() {
 	c2FileName := os.Args[1]
 
 	c2 := io.NpytoMat64(c2FileName)
+	inputRows, inputCols := c2.Dims()
 
-	sim := mat64.NewDense(13362, 13362, nil)
+	sim := mat64.NewDense(inputRows, inputCols, nil)
 
 	processSim(c2, sim)
 
@@ -25,12 +26,13 @@ func main() {
 }
 
 func processLine(c2 *mat64.Dense, sim *mat64.Dense, order <-chan int, wg *sync.WaitGroup) {
+	_, inputCols := c2.Dims()
 	for {
 		index, ok := <-order
 		if ok {
 			for i := 0; i < (index + 1); i++ { // for all cols j
 				var accProd float64
-				for t := 0; t < 13362; t++ { // dotProd(i, j)
+				for t := 0; t < inputCols; t++ { // dotProd(i, j)
 					accProd = accProd + (c2.At(index, t) * c2.At(i, t))
 				}
 
@@ -50,18 +52,19 @@ func processLine(c2 *mat64.Dense, sim *mat64.Dense, order <-chan int, wg *sync.W
 }
 
 func processSim(c2 *mat64.Dense, sim *mat64.Dense) {
+	inputRows, _ := c2.Dims()
 	workers := runtime.NumCPU()
 
 	order := make(chan int, workers)
 	var wg sync.WaitGroup
 
-	wg.Add(13362)
+	wg.Add(inputRows)
 
 	for i := 0; i < workers; i++ {
 		go processLine(c2, sim, order, &wg)
 	}
 
-	for i := 0; i < 13362; i++ {
+	for i := 0; i < inputRows; i++ {
 		order <- i
 	}
 
