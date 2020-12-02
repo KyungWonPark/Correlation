@@ -85,7 +85,7 @@ func main() { // SUBJ TIMESTART TIMEEND anti-parallel GAMMA
 		// Call MAGMA
 		// Fuck. I haredcoded. Fucking bitch cunt IBM LSF
 
-		cmd := exec.Command("/home/iksoochang2/kw-park/.root/usr/local/bin/magma", "13362", fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
+		cmd := exec.Command("/home/iksoochang2/kw-park/.root/usr/local/bin/magma", fmt.Sprintf("%d", inputRows), fmt.Sprintf("%d", matBufferShm.Id), fmt.Sprintf("%d", eigValShm.Id))
 		err := cmd.Run()
 		if err != nil {
 			log.Fatalf("[main.go - line 88] MAGMA execution has failed: %s\n", err)
