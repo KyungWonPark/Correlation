@@ -87,6 +87,8 @@ func main() {
 				value := img.GetAt(uint32(Vox.x), uint32(Vox.y), uint32(Vox.z), uint32(t))
 				cgGray.Set(i, t-timeStart, float64(value))
 			}
+
+			wg.Done()
 			return
 		}(i)
 	}
