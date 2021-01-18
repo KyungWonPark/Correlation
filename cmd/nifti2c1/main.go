@@ -40,7 +40,7 @@ func init() {
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := scanner.Text()
-		xyz := strings.Split(line, ",")
+		xyz := strings.Split(line, " ")
 		x, err0 := strconv.Atoi(xyz[0])
 		y, err1 := strconv.Atoi(xyz[1])
 		z, err2 := strconv.Atoi(xyz[2])
