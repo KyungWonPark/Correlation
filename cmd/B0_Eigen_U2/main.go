@@ -9,7 +9,7 @@ import (
 
 	"github.com/KyungWonPark/Correlation/internal/calc"
 	"github.com/KyungWonPark/Correlation/internal/io"
-	"github.com/ghetzel/shmtool/shm"
+	"github.com/KyungWonPark/shmtool/shm"
 	"github.com/gonum/matrix/mat64"
 	// "gonum.org/v1/gonum/blas/blas64"
 	// blas_netlib "gonum.org/v1/netlib/blas/netlib"
@@ -27,12 +27,17 @@ func main() { // SUBJ TIMESTART TIMEEND anti-parallel GAMMA
 	c2 := io.NpytoMat64("bin/c2.npy")
 	inputRows, inputCols := c2.Dims()
 
-	matBufferShm, err := shm.Create(inputRows * inputCols * 8)
+	var _inputRows uint64
+	_inputRows = uint64(inputRows)
+	var _inputCols uint64
+	_inputCols = uint64(inputCols)
+
+	matBufferShm, err := shm.Create(_inputRows * _inputCols * 8)
 	if err != nil {
 		log.Fatalf("Failed to create shared memory region: %s\n", err)
 	}
 
-	eigValShm, err := shm.Create(inputRows * 1 * 8)
+	eigValShm, err := shm.Create(_inputRows * 1 * 8)
 	if err != nil {
 		log.Fatalf("Failed to create shared memory region: %s\n", err)
 	}
