@@ -54,6 +54,12 @@ func main() {
 	averaging(&fineMap)
 
 	newImg := nifti.NewImg(91, 109, 91, 1)
+	var header nifti.Nifti1Header
+	header.LoadHeader("template.nii")
+
+	newImg.SetNewHeader(header)
+	newImg.SetHeaderDim(91, 109, 91, 1)
+
 	for xPos := 0; xPos < 91; xPos++ {
 		for yPos := 0; yPos < 109; yPos++ {
 			for zPos := 0; zPos < 91; zPos++ {
