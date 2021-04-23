@@ -58,7 +58,7 @@ func main() {
 	header.LoadHeader("template.nii")
 
 	newImg.SetNewHeader(header)
-	newImg.SetHeaderDim(91, 109, 91, 1)
+	newImg.SetHeaderDim2(91, 109, 91, 1)
 
 	for xPos := 0; xPos < 91; xPos++ {
 		for yPos := 0; yPos < 109; yPos++ {
