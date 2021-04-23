@@ -63,6 +63,8 @@ func main() {
 		}
 	}
 
+	fmt.Println(newImg.GetHeader())
+
 	newImg.Save("u.nii")
 }
 
