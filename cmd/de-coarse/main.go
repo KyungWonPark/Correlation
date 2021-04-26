@@ -53,7 +53,7 @@ func main() {
 					zPos := seed.z + zD
 
 					vox := &fineMap[xPos][yPos][zPos]
-					if vox.isGray {
+					if vox.voxType == 1 {
 						vox.value += (seed.value * scaleFactor * float64(share))
 						vox.denom += share
 					}
@@ -74,6 +74,10 @@ func main() {
 	for xPos := 0; xPos < 91; xPos++ {
 		for yPos := 0; yPos < 109; yPos++ {
 			for zPos := 0; zPos < 91; zPos++ {
+				if fineMap[xPos][yPos][zPos].voxType == 2 {
+					fineMap[xPos][yPos][zPos].value = 100
+				}
+
 				val := fineMap[xPos][yPos][zPos].value
 				newImg.SetAt(uint32(xPos), uint32(yPos), uint32(zPos), 0, float32(val))
 			}

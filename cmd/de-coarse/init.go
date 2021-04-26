@@ -17,9 +17,9 @@ type VoxelCoord struct {
 }
 
 type Voxel struct {
-	isGray bool
-	value  float64
-	denom  int
+	voxType int
+	value   float64
+	denom   int
 }
 
 var seedList [13362]VoxelCoord
@@ -75,7 +75,17 @@ func init() {
 				log.Fatal("Failed to convert ascii to integer", err0, err1, err2)
 			}
 
-			fineMap[x-1][y-1][z-1].isGray = true
+			fineMap[x-1][y-1][z-1].voxType = 1
+		} else if line[3] == "2.000" {
+			x, err0 := strconv.Atoi(line[0])
+			y, err1 := strconv.Atoi(line[1])
+			z, err2 := strconv.Atoi(line[2])
+			if err0 != nil || err1 != nil || err2 != nil {
+				log.Fatal("Failed to convert ascii to integer", err0, err1, err2)
+			}
+
+			fineMap[x-1][y-1][z-1].voxType = 2
+
 		}
 	}
 }
