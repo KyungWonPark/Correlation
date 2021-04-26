@@ -3,7 +3,7 @@ module github.com/KyungWonPark/Correlation
 go 1.15
 
 require (
-	github.com/KyungWonPark/nifti v0.0.0-20200707062722-d8b82a498587
+	github.com/KyungWonPark/nifti v0.0.0-20210423085009-7e4f339c7ec5
 	github.com/KyungWonPark/shmtool v0.0.7
 	github.com/ghetzel/shmtool v0.0.4
 	github.com/gonum/blas v0.0.0-20181208220705-f22b278b28ac // indirect
