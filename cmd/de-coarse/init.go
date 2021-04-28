@@ -78,9 +78,9 @@ func init() {
 			fineMap[x-1][y-1][z-1].voxType = 1
 		} else if line[3] == "2.000" { // White Voxel
 			fineMap[x-1][y-1][z-1].voxType = 2
-			fineMap[x-1][y-1][z-1].value = -5
+			fineMap[x-1][y-1][z-1].value = -100
 		} else { // Void
-			fineMap[x-1][y-1][z-1].value = -10
+			fineMap[x-1][y-1][z-1].value = -200
 		}
 	}
 }
