@@ -31,17 +31,6 @@ func main() {
 		seedList[i].value = npyDat[i]
 	}
 
-	var acc float64
-	var cnt int
-
-	for i := 0; i < npyDim; i++ {
-		acc += npyDat[i]
-		cnt += 1
-	}
-
-	avg := acc / float64(cnt)
-	scaleFactor := 7386 / avg
-
 	for _, seed := range seedList {
 		for xD := -1; xD < 2; xD++ {
 			for yD := -1; yD < 2; yD++ {
@@ -55,7 +44,7 @@ func main() {
 
 					vox := &fineMap[xPos][yPos][zPos]
 					if vox.voxType == 1 {
-						vox.value += (seed.value * scaleFactor * float64(share))
+						vox.value += (seed.value * float64(share))
 						vox.denom += share
 					}
 				}
