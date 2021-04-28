@@ -105,9 +105,13 @@ func avg1(fineMap *[91][109][91]Voxel, order <-chan int, wg *sync.WaitGroup) {
 				for zPos := 0; zPos < 91; zPos++ {
 					vox := &fineMap[xPos][yPos][zPos]
 
-					if vox.denom != 0 {
-						val := vox.value
-						vox.value = val / float64(8)
+					if vox.voxType == 1 {
+						if vox.denom != 0 {
+							val := vox.value
+							vox.value = val / float64(8)
+						} else {
+							vox.value = 100
+						}
 					}
 				}
 			}
