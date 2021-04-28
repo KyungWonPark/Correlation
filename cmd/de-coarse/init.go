@@ -80,7 +80,7 @@ func init() {
 			fineMap[x-1][y-1][z-1].voxType = 2
 			fineMap[x-1][y-1][z-1].value = 0
 		} else { // Void
-			fineMap[x-1][y-1][z-1].value = -2000
+			fineMap[x-1][y-1][z-1].value = -1
 		}
 	}
 }
