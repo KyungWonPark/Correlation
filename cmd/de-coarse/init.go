@@ -67,25 +67,20 @@ func init() {
 	scanner = bufio.NewScanner(g)
 	for scanner.Scan() {
 		line := strings.Split(scanner.Text(), " ")
-		if line[3] == "1.000" {
-			x, err0 := strconv.Atoi(line[0])
-			y, err1 := strconv.Atoi(line[1])
-			z, err2 := strconv.Atoi(line[2])
-			if err0 != nil || err1 != nil || err2 != nil {
-				log.Fatal("Failed to convert ascii to integer", err0, err1, err2)
-			}
+		x, err0 := strconv.Atoi(line[0])
+		y, err1 := strconv.Atoi(line[1])
+		z, err2 := strconv.Atoi(line[2])
+		if err0 != nil || err1 != nil || err2 != nil {
+			log.Fatal("Failed to convert ascii to integer", err0, err1, err2)
+		}
 
+		if line[3] == "1.000" { // Grey Voxel
 			fineMap[x-1][y-1][z-1].voxType = 1
-		} else if line[3] == "2.000" {
-			x, err0 := strconv.Atoi(line[0])
-			y, err1 := strconv.Atoi(line[1])
-			z, err2 := strconv.Atoi(line[2])
-			if err0 != nil || err1 != nil || err2 != nil {
-				log.Fatal("Failed to convert ascii to integer", err0, err1, err2)
-			}
-
+		} else if line[3] == "2.000" { // White Voxel
 			fineMap[x-1][y-1][z-1].voxType = 2
-
+			fineMap[x-1][y-1][z-1].value = 0
+		} else { // Void
+			fineMap[x-1][y-1][z-1].value = -5000
 		}
 	}
 }
