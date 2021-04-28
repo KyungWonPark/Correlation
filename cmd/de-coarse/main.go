@@ -13,6 +13,7 @@ import (
 
 func main() {
 	fileName := os.Args[1]
+	outputName := os.Args[2]
 	fmt.Printf("Filename: %s\n", fileName)
 
 	npyReader, err := gonpy.NewFileReader(fileName)
@@ -82,7 +83,7 @@ func main() {
 
 	fmt.Println(newImg.GetHeader())
 
-	newImg.Save("u.nii")
+	newImg.Save(outputName)
 }
 
 func avg0(fineMap *[91][109][91]Voxel, order <-chan int, wg *sync.WaitGroup) {
