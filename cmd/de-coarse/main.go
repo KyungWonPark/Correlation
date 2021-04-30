@@ -88,7 +88,7 @@ func avg0(fineMap *[91][109][91]Voxel, order <-chan int, wg *sync.WaitGroup) {
 							val := vox.value
 							vox.value = val / float64(vox.denom)
 						} else {
-							vox.value = 100
+							vox.value = -50
 						}
 					}
 				}
